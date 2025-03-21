@@ -1,10 +1,7 @@
-import './App.css'
+import React from "react";
 
-function App() {
+const App: React.FC = () => {
+  return <div>App</div>;
+};
 
-  return (
-   <div></div>
-  )
-}
-
-export default App
+export default App;

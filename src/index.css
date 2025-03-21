@@ -1,1 +1,17 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap");
+body,
+html,
+#root {
+  width: 100%;
+  height: 100%;
+}
+* {
+  font-family: "Winky Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+@theme {
+  --color-var-blue: #3b82f6;
+}

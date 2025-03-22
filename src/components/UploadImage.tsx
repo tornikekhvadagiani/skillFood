@@ -8,11 +8,13 @@ const UploadImage = () => {
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    console.log(file)
 
     setLoading(true);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "ml_default");
+    console.log(formData)
 
     try {
       const response = await axios.post(
@@ -36,13 +38,8 @@ const UploadImage = () => {
         accept="image/*"
       />
       {loading && <p>Uploading...</p>}
-      {image && (
-        <img
-          src={image}
-          alt="Uploaded"
-          className="w-40 h-40 object-cover"
-        />
-      )}
+      
+      
     </div>
   );
 };

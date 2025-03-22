@@ -8,4 +8,5 @@ export interface InputFieldProps {
   onClick?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   inputClassName?: string;
+  isFile?: boolean;
 }

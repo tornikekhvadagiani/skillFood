@@ -26,6 +26,7 @@ const ButtonsList = (props: { setRegisterAs: (title: string) => void }) => {
     <div className="flex gap-2 py-2">
       {buttonList.map((e: IButtonList, i: number) => (
         <BlueButton
+          key={i}
           title={e.title}
           active={activeIndex === i}
           onClick={() => {

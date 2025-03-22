@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
 body,
 html,
 #root {
@@ -7,10 +8,9 @@ html,
   height: 100%;
 }
 * {
-  font-family: "Winky Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
-  font-style: normal;
 }
 @theme {
   --color-var-blue: #3b82f6;

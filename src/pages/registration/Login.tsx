@@ -1,37 +1,18 @@
-import React, { useRef, useState } from "react";
-import { InputFieldProps } from "../../interfaces/input-field-interface";
-import MyForm from "../../components/MyForm";
+import React, { useState } from "react";
+
+import ButtonsList from "./ButtonsList";
+import CourierRegister from "./RegisterAs/CourierRegister/CourierRegister";
 
 const Login: React.FC = () => {
-  const nameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
-  const inputs: InputFieldProps[] = [
-    {
-      name: "name",
-      type: "text",
-      placeholder: "Enter your name",
-      inputRef: nameRef,
-    },
-    {
-      name: "email",
-      type: "text",
-      placeholder: "Enter your email",
-      inputRef: emailRef,
-    },
-  ];
+  const [registerAs, setRegisterAs] = useState<string>("");
 
   return (
-    <div className="w-full h-full">
-      <MyForm
-        className="flex flex-col items-center justify-center w-full h-full px-10 gap-3  "
-        inputs={inputs}
-        onSubmit={handleSubmit}
-      />
+    <div className="w-full h-full flex flex-col items-center ">
+      <div className="py-20 text-center">
+        <h1>Sign In As:</h1>
+        <ButtonsList setRegisterAs={setRegisterAs} />
+      </div>
+      <CourierRegister />
     </div>
   );
 };

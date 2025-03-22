@@ -11,7 +11,7 @@ const CourierRegister: React.FC = () => {
   const [hoursModalActive, setHoursModalActive] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isWorkingHoursSelected, setIsWorkingHoursSelected] =
-    useState<boolean>(false); // New state to track if working hours are selected
+    useState<boolean>(false); 
 
   const requiredFields: string[] = [
     "role",
@@ -24,9 +24,6 @@ const CourierRegister: React.FC = () => {
     "vehichle",
   ];
 
-  const [selectedWorkingHours, setSelectedWorkingHours] = useState<
-    Record<string, Set<string>>
-  >({});
 
   const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -45,6 +42,7 @@ const CourierRegister: React.FC = () => {
   };
 
   const nextStage = () => {
+    console.log(workingHours);
     if (stage === 3) return;
     const currentStageInputs = inputsStages[stage - 1];
     let hasError = false;

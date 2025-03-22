@@ -1,7 +1,12 @@
 import React from "react";
 import { FormProps } from "../interfaces/form-propst-interface";
 
-const MyForm: React.FC<FormProps> = ({ inputs, onSubmit, className }) => {
+const MyForm: React.FC<FormProps> = ({
+  inputs,
+  onSubmit,
+  className,
+  inputClassName,
+}) => {
   return (
     <form onSubmit={onSubmit} className={className}>
       {inputs.map((input) => (
@@ -13,7 +18,12 @@ const MyForm: React.FC<FormProps> = ({ inputs, onSubmit, className }) => {
           ref={input.inputRef ?? undefined}
           value={input.inputRef ? undefined : input.value}
           onChange={input.inputRef ? undefined : input.onChange}
-          className="w-full p-2 border border-gray-300 rounded focus:ring-2 outline-none focus:ring-var-blue"
+          onClick={
+            typeof input.onClick === "function"
+              ? (e) => input.onClick?.(e as any)
+              : undefined
+          }
+          className={`w-full p-2 border border-gray-300 rounded focus:ring-2 outline-none focus:ring-var-blue ${input.inputClassName}`}
         />
       ))}
 

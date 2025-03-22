@@ -14,4 +14,5 @@ html,
 }
 @theme {
   --color-var-blue: #3b82f6;
+  --color-var-black-transparent: rgba(0, 0, 0, 0.799);
 }

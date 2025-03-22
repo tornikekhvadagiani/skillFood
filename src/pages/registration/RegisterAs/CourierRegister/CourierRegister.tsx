@@ -2,15 +2,36 @@ import React, { useState } from "react";
 import StageForm from "./StageForm";
 import BlueButton from "../../../../components/BlueButton";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
+import SelectCourierHours from "../../../../components/SelectCourierHours";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+  const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [hoursModalActive, setHoursModalActive] = useState<boolean>(false);
+  const [selectedWorkingHours, setSelectedWorkingHours] = useState<
+    Record<string, Set<string>>
+  >({});
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
+    {}
+  );
+  console.log(Object.keys(workingHours).length);
 
+  const handleTimeSelectionChange = (
+    newWorkingHours: Record<string, string[]>
+  ) => {
+    setWorkingHours(newWorkingHours);
+  };
+  const nextStage = () => {
+    if (stage < 3) setStage((prev) => prev + 1);
+  };
+
+  const prevStage = () => {
+    if (stage > 1) setStage((prev) => prev - 1);
+  };
   const inputsStages: InputFieldProps[][] = [
     [
       {
@@ -74,11 +95,11 @@ const CourierRegister: React.FC = () => {
         onChange: (e) => handleInputChange("name", e.target.value),
       },
       {
-        name: "email",
-        type: "text",
-        placeholder: "Enter your email",
-        value: formData.email || "",
-        onChange: (e) => handleInputChange("email", e.target.value),
+        name: "dates",
+        type: "button",
+        value: "Select Working Dates",
+        inputClassName: "bg-var-blue text-white cursor-pointer",
+        onClick: () => setHoursModalActive(true),
       },
     ],
   ];
@@ -88,24 +109,21 @@ const CourierRegister: React.FC = () => {
     console.log("Form Data:", formData);
   };
 
-  const nextStage = () => {
-    if (stage < 3) setStage((prev) => prev + 1);
-  };
-
-  const prevStage = () => {
-    if (stage > 1) setStage((prev) => prev - 1);
-  };
-
   return (
     <>
+      <SelectCourierHours
+        isOpen={hoursModalActive}
+        setIsOpen={setHoursModalActive}
+        onTimeSelectionChange={handleTimeSelectionChange}
+      />
       <StageForm
         stage={stage}
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}
       />
       <div className="flex py-10 gap-10">
-        <BlueButton active={stage > 1} onClick={prevStage} title="Previous" />
-        <BlueButton active={stage < 3} onClick={nextStage} title="Next" />
+        <BlueButton active={stage === 1} onClick={prevStage} title="Previous" />
+        <BlueButton active={stage === 3} onClick={nextStage} title="Next" />
       </div>
     </>
   );

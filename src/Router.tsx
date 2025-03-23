@@ -3,8 +3,8 @@ import Home from "./pages/home/Home";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 
 import RegistrationLayout from "./layouts/RegistrationLayout";
-import Login from "./pages/registration/Login";
-import Register from "./pages/registration/Register";
+import Login from "./pages/registration/Login/Login";
+import Register from "./pages/registration/Register/Register";
 
 const Router = () => {
   const isAuthenticated = false;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import BlueButton from "../../components/BlueButton";
 
 const ButtonsList = (props: { setRegisterAs: (title: string) => void }) => {

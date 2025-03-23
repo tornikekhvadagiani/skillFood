@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import StageForm from "./StageForm";
 import BlueButton from "../../../../components/BlueButton";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import SelectCourierHours from "../../../../components/SelectCourierHours";
 import { toast } from "react-toastify";
+import StageForm from "./StageForm";
 
-const UserRegister: React.FC = () => {
+const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [hoursModalActive, setHoursModalActive] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-  const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
-    {}
-  );
+  const [isWorkingHoursSelected, setIsWorkingHoursSelected] =
+    useState<boolean>(false);
 
   const requiredFields: string[] = [
     "role",
@@ -21,74 +21,96 @@ const UserRegister: React.FC = () => {
     "phone",
     "password",
     "dates",
-    "vehicle",
-    "profilepicture",
+    "vehichle",
   ];
 
   const handleInputChange = (name: string, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
+    {}
+  );
+
+  const handleTimeSelectionChange = (
+    newWorkingHours: Record<string, string[]>
+  ) => {
+    setWorkingHours(newWorkingHours);
+    setIsWorkingHoursSelected(true);
+    handleInputChange("workingHours", JSON.stringify(newWorkingHours));
   };
 
   const nextStage = () => {
+    console.log(workingHours);
     if (stage === 3) return;
     const currentStageInputs = inputsStages[stage - 1];
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    currentStageInputs.forEach((input) => {
+    currentStageInputs.forEach((input, i) => {
       if (requiredFields.includes(input.name) && !formData[input.name]) {
         newErrors[input.name] = true;
         hasError = true;
+        if (i === 1) toast.error("Please fill all required fields");
       }
     });
 
     setErrors(newErrors);
-    if (!hasError) setStage((prev) => prev + 1);
+
+    if (!hasError) {
+      setStage((prev) => prev + 1);
+    }
   };
 
   const prevStage = () => {
     if (stage > 1) setStage((prev) => prev - 1);
   };
 
-  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
-    e?.preventDefault();
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    if (!formData["lat"]) {
-      newErrors["lat"] = true;
+    console.log(Object.keys(workingHours).length);
+
+    if (Object.keys(workingHours).length <= 4) {
+      newErrors["workingHours"] = true;
       hasError = true;
-      toast.error("Please fill in the lat field");
+      toast.error("Please Select 5 or more days in week");
     }
-    if (!formData["role"]) {
-      newErrors["role"] = true;
+
+    if (!formData["vehichle"]) {
+      newErrors["vehichle"] = true;
       hasError = true;
-      toast.error("Please fill in the role field");
+      toast.error("Please fill in the vehicle field");
     }
-    if (!formData["lng"]) {
-      newErrors["lng"] = true;
-      hasError = true;
-      toast.error("Please fill in the lng field");
-    }
-    console.log(hasError);
-    console.log(formData);
 
     setErrors(newErrors);
-    if (!hasError && stage < 3) {
-      setStage((prev) => prev + 1);
+
+    if (!hasError) {
+      if (stage < 3) {
+        setStage((prev) => prev + 1);
+      }
     }
+
+    console.log("Form Data:", formData);
   };
 
   const inputsStages: InputFieldProps[][] = [
     [
       {
+        name: "role",
+        type: "text",
+        placeholder: "Enter your Role (courier)",
+        value: formData.role || "",
+        onChange: (e) => handleInputChange("role", e.target.value),
+      },
+      {
         name: "firstname",
         type: "text",
         placeholder: "Enter your first name",
-        value: formData.firstname || "",
+        value: formData.name || "",
         onChange: (e) => handleInputChange("firstname", e.target.value),
       },
       {
@@ -98,6 +120,8 @@ const UserRegister: React.FC = () => {
         value: formData.lastname || "",
         onChange: (e) => handleInputChange("lastname", e.target.value),
       },
+    ],
+    [
       {
         name: "personalId",
         type: "text",
@@ -105,8 +129,6 @@ const UserRegister: React.FC = () => {
         value: formData.personalId || "",
         onChange: (e) => handleInputChange("personalId", e.target.value),
       },
-    ],
-    [
       {
         name: "phone",
         type: "number",
@@ -117,8 +139,8 @@ const UserRegister: React.FC = () => {
       {
         name: "email",
         type: "text",
-        placeholder: "Enter your Email",
-        value: formData.email || "",
+        placeholder: "Enter your phone email",
+        value: formData.phone || "",
         onChange: (e) => handleInputChange("email", e.target.value),
       },
       {
@@ -128,37 +150,29 @@ const UserRegister: React.FC = () => {
         value: formData.password || "",
         onChange: (e) => handleInputChange("password", e.target.value),
       },
-      {
-        name: "profilepicture",
-        type: "file",
-        isFile: true,
-
-        onChange: (e) =>
-          handleInputChange("profilepicture", e.target.files?.[0] || null),
-      },
     ],
     [
       {
-        name: "role",
-        type: "text",
-        placeholder: "Enter role role",
-        value: formData.role || "",
-
-        onChange: (e) => handleInputChange("role", e.target.value),
+        name: "file",
+        type: "file",
+        isFile: true,
+        onChange: (e) => handleInputChange("file", e.target.files?.[0] || ""),
       },
       {
-        name: "lng",
+        name: "vehichle",
         type: "text",
-        placeholder: "Enter Adress LNG",
-        value: formData.lng || "",
-        onChange: (e) => handleInputChange("lng", e.target.value),
+        placeholder: "Enter vehichle type",
+        value: formData.vehichle || "",
+        onChange: (e) => handleInputChange("vehichle", e.target.value),
       },
       {
-        name: "lat",
-        type: "text",
-        placeholder: "Enter Adress LAT",
-        value: formData.lat || "",
-        onChange: (e) => handleInputChange("lat", e.target.value),
+        name: "dates",
+        type: "button",
+        value: "Select Working Hours",
+        inputClassName: `p-2 border rounded cursor-pointer ${
+          errors["workingHours"] ? "border-red-500" : "border-gray-300"
+        }`,
+        onClick: () => setHoursModalActive(true),
       },
       {
         name: "submit",
@@ -172,6 +186,11 @@ const UserRegister: React.FC = () => {
 
   return (
     <>
+      <SelectCourierHours
+        isOpen={hoursModalActive}
+        setIsOpen={setHoursModalActive}
+        onTimeSelectionChange={handleTimeSelectionChange}
+      />
       <StageForm
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}
@@ -185,4 +204,4 @@ const UserRegister: React.FC = () => {
   );
 };
 
-export default UserRegister;
+export default CourierRegister;

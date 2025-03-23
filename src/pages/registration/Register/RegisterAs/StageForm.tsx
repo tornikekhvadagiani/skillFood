@@ -1,6 +1,6 @@
 import React from "react";
-import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import MyForm from "../../../../components/MyForm";
+import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 
 interface StageFormProps {
   inputs: InputFieldProps[];

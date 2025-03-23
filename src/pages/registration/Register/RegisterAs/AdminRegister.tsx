@@ -4,11 +4,15 @@ import StageForm from "./StageForm";
 import { toast } from "react-toastify";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import BlueButton from "../../../../components/BlueButton";
+import usePostRequest from "../../../../hooks/usePostRequest";
+import { useNavigate } from "react-router-dom";
 
 const AdminRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const { VITE_API_URL, VITE_ADMINS_KEY } = import.meta.env;
+  const navigate = useNavigate();
 
   const requiredFields: string[] = [
     "role",
@@ -19,7 +23,6 @@ const AdminRegister: React.FC = () => {
     "password",
     "dates",
     "vehicle",
-    "profilepicture",
   ];
 
   const handleInputChange = (name: string, value: any) => {
@@ -70,12 +73,29 @@ const AdminRegister: React.FC = () => {
       hasError = true;
       toast.error("Please fill in the lng field");
     }
-    console.log(hasError);
     console.log(formData);
-
     setErrors(newErrors);
-    if (!hasError && stage < 3) {
-      setStage((prev) => prev + 1);
+    if (!hasError) {
+      const requestData = {
+        firstname: formData.firstname,
+        lastname: formData.lastname || null,
+        email: formData.email,
+        personalId: formData.personalId,
+        phone: formData.phone,
+        dates: formData.dates,
+        password: formData.password,
+        profilepicture: formData.profilepicture || null,
+        role: formData.role,
+      };
+      usePostRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_ADMINS_KEY,
+        data: requestData,
+        endPoint: "admins",
+        toastError: "Failed To Create Admin Account",
+        toastSuccess: "Admin Account Created Successfully",
+        navigate: navigate,
+      });
     }
   };
 
@@ -129,7 +149,6 @@ const AdminRegister: React.FC = () => {
         name: "profilepicture",
         type: "file",
         isFile: true,
-
         onChange: (e) =>
           handleInputChange("profilepicture", e.target.files?.[0] || null),
       },

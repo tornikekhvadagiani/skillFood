@@ -4,13 +4,15 @@ import StageForm from "./StageForm";
 import { toast } from "react-toastify";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import BlueButton from "../../../../components/BlueButton";
+import usePostRequest from "../../../../hooks/usePostRequest";
+import { useNavigate } from "react-router-dom";
 
 const UserRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
- 
-
+  const { VITE_API_URL, VITE_USERS_KEY } = import.meta.env;
+  const navigate = useNavigate();
   const requiredFields: string[] = [
     "role",
     "firstname",
@@ -20,7 +22,6 @@ const UserRegister: React.FC = () => {
     "password",
     "dates",
     "vehicle",
-    "profilepicture",
   ];
 
   const handleInputChange = (name: string, value: any) => {
@@ -71,12 +72,30 @@ const UserRegister: React.FC = () => {
       hasError = true;
       toast.error("Please fill in the lng field");
     }
-    console.log(hasError);
-    console.log(formData);
 
     setErrors(newErrors);
-    if (!hasError && stage < 3) {
-      setStage((prev) => prev + 1);
+    if (!hasError) {
+      const requestData = {
+        email: formData.email,
+        firstname: formData.firstname,
+        lastname: formData.lastname || null,
+        lat: formData.lat,
+        lng: formData.lng,
+        password: formData.password,
+        personalId: formData.personalId,
+        phone: formData.phone,
+        profilepicture: formData.profilepicture || null,
+        role: formData.role,
+      };
+      usePostRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_USERS_KEY,
+        data: requestData,
+        endPoint: "users",
+        toastError: "Failed To Create Account",
+        toastSuccess: "Account Created Succesfully",
+        navigate: navigate,
+      });
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import ButtonsList from "./ButtonsList";
 import CourierRegister from "./RegisterAs/CourierRegister/CourierRegister";
+import UserRegister from "./RegisterAs/CourierRegister/UserRegister";
 
 const Login: React.FC = () => {
   const [registerAs, setRegisterAs] = useState<string>("");
@@ -12,7 +13,7 @@ const Login: React.FC = () => {
         <h1>Sign In As:</h1>
         <ButtonsList setRegisterAs={setRegisterAs} />
       </div>
-      <CourierRegister />
+      <UserRegister />
     </div>
   );
 };

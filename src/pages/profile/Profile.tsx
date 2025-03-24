@@ -6,7 +6,6 @@ import ProfilePicture from "./components/ProfilePicture";
 
 export default function Profile() {
   const { user } = useAuth();
-  console.log(user);
 
   return (
     <div className=" flex flex-col w-full h-full justify-center items-center text-center">

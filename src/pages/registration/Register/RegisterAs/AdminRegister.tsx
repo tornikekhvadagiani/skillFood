@@ -186,6 +186,12 @@ const AdminRegister: React.FC = () => {
         onChange: (e) => handleInputChange("lat", e.target.value),
       },
       {
+        name: "map",
+        type: "button",
+        value: "Enter Map",
+        inputClassName: "cursor-pointer",
+      },
+      {
         name: "submit",
         type: "submit",
         value: "Submit Registration",

@@ -12,26 +12,32 @@ const markerIcon = new L.Icon({
 });
 
 interface ICoordinates {
-  lat: number;
-  lng: number;
+  lat: string | null;
+  lng: string | null;
 }
 
 const LocationMarker: React.FC<{
   setPosition: (coords: ICoordinates) => void;
   position: ICoordinates | null;
 }> = ({ position, setPosition }) => {
-  const { setCoordinates } = useAuth(); // ✅ Now inside a component
+  const { setCoordinates } = useAuth();
 
   useMapEvents({
     click(e: L.LeafletMouseEvent) {
-      const newPosition = { lat: e.latlng.lat, lng: e.latlng.lng };
+      const newPosition: ICoordinates = {
+        lat: String(e.latlng.lat),
+        lng: String(e.latlng.lng),
+      };
       setPosition(newPosition);
       setCoordinates(newPosition);
     },
   });
 
-  return position ? (
-    <Marker position={[position.lat, position.lng]} icon={markerIcon} />
+  return position && position.lat !== null && position.lng !== null ? (
+    <Marker
+      position={[Number(position.lat), Number(position.lng)]}
+      icon={markerIcon}
+    />
   ) : null;
 };
 

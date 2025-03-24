@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/home/Home";
+// import Home from "./pages/home/Home";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 
 import RegistrationLayout from "./layouts/RegistrationLayout";
@@ -17,7 +17,7 @@ const Router = () => {
           <Route index element={<Profile />} />
         </Route>
         <Route path="/registration" element={<RegistrationLayout />}>
-          <Route path="login" element={<Login />} />
+          <Route path="login/:loginType" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
 

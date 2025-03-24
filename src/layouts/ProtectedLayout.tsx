@@ -11,7 +11,7 @@ const ProtectedLayout: React.FC = () => {
       <Outlet />
     </>
   ) : (
-    <Navigate to="/registration/login" replace />
+    <Navigate to="/registration/login/users" replace />
   );
 };
 

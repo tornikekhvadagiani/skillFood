@@ -16,9 +16,8 @@ const UserRegister: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const { VITE_API_URL, VITE_USERS_KEY } = import.meta.env;
   const navigate = useNavigate();
-  const { coordinates } = useAuth();
+  const { coordinates, setCoordinates } = useAuth();
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
-
   const requiredFields: string[] = [
     "role",
     "firstname",
@@ -63,7 +62,7 @@ const UserRegister: React.FC = () => {
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    if (coordinates.lat === 0) {
+    if (!coordinates.lat) {
       newErrors["lat"] = true;
       hasError = true;
       toast.error("Please fill in the lat field");
@@ -73,7 +72,7 @@ const UserRegister: React.FC = () => {
       hasError = true;
       toast.error("Please fill in the role field");
     }
-    if (coordinates.lng === 0) {
+    if (!coordinates.lng) {
       newErrors["lng"] = true;
       hasError = true;
       toast.error("Please fill in the lng field");
@@ -110,7 +109,13 @@ const UserRegister: React.FC = () => {
         toastError: "Failed To Create Account",
         toastSuccess: "Account Created Succesfully",
         navigate: navigate,
-      });
+        navigateUrl: "/registration/login/users",
+      }).then(() =>
+        setCoordinates({
+          lat: null,
+          lng: null,
+        })
+      );
     }
   };
 
@@ -175,21 +180,28 @@ const UserRegister: React.FC = () => {
         type: "text",
         placeholder: "Enter role role",
         value: formData.role || "",
-
         onChange: (e) => handleInputChange("role", e.target.value),
       },
       {
         name: "lng",
         type: "text",
-        placeholder: "Enter Adress LNG",
-        value: coordinates.lng,
+        placeholder: "Enter Address LNG",
+        inputClassName: "pointer-events-none text-gray-500",
+
+        value: !coordinates.lat
+          ? "Use map pin to get correct LAT"
+          : coordinates.lat,
         onChange: (e) => handleInputChange("lng", e.target.value),
       },
+
       {
         name: "lat",
         type: "text",
         placeholder: "Enter Adress LAT",
-        value: coordinates.lat,
+        inputClassName: "pointer-events-none text-gray-500",
+        value: !coordinates.lng
+          ? "Use map pin to get correct LNG"
+          : coordinates.lng,
         onChange: (e) => handleInputChange("lat", e.target.value),
       },
       {
@@ -210,6 +222,7 @@ const UserRegister: React.FC = () => {
       },
     ],
   ];
+  console.log(coordinates);
 
   return (
     <>

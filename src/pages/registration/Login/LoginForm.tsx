@@ -7,10 +7,10 @@ import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
-  registerAs: string;
+  loginType: string;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
   const [formData, setFormData] = useState<{ email: string; password: string }>(
     {
       email: "",
@@ -30,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
 
   // Get the data via useGetRequest
   const { data, error, loading } = useGetRequest({
-    baseUrl: `${VITE_API_URL}/${registerAs}`,
+    baseUrl: `${VITE_API_URL}/${loginType}`,
     key: VITE_COURIERS_KEY,
   });
 
@@ -85,7 +85,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
       email: "",
       password: "",
     });
-  }, [registerAs]);
+  }, [loginType]);
 
   const loginInputs = [
     {

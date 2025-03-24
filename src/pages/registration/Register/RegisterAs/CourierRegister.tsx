@@ -110,9 +110,10 @@ const CourierRegister: React.FC = () => {
       key: VITE_COURIERS_KEY,
       data: requestData,
       endPoint: "couriers",
-      toastError: "Failed To Create Admin Account",
-      toastSuccess: "Admin Account Created Successfully",
+      toastError: "Failed To Create Courier Account",
+      toastSuccess: "Courier Account Created Successfully",
       navigate: navigate,
+      navigateUrl: "/registration/login/couriers",
     });
   };
 

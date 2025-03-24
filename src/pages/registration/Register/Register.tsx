@@ -6,21 +6,20 @@ import { Link } from "react-router-dom";
 import AdminRegister from "./RegisterAs/AdminRegister";
 
 const Register: React.FC = () => {
-
-
   const RenderRegister = () => {
     switch (registerAs) {
-      case "user":
+      case "users":
         return <UserRegister />;
-      case "courier":
+      case "couriers":
         return <CourierRegister />;
-      case "admin":
+      case "admins":
         return <AdminRegister />;
       default:
         return null;
     }
   };
-  const [registerAs, setRegisterAs] = useState<string>("user");
+  const [registerAs, setRegisterAs] = useState<string>("users");
+  console.log(registerAs);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-between py-10">

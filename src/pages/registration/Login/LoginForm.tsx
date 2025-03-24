@@ -6,6 +6,7 @@ import useGetRequest from "../../../hooks/useGetRequest";
 interface LoginFormProps {
   registerAs: string;
 }
+import { useAuth } from "../../../contexts/AuthContext";
 const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
   const [formData, setFormData] = useState<{ email: string; password: string }>(
     {
@@ -20,8 +21,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
-
-  // Custom hook call
+  const { login } = useAuth();
   const { data: users } = useGetRequest({
     baseUrl: `${VITE_API_URL}/${registerAs}`,
     key: VITE_COURIERS_KEY,
@@ -60,6 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Login successful!");
+      login(user);
       navigate("/dashboard");
     } else {
       toast.error("Invalid email or password.");

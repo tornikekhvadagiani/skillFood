@@ -64,6 +64,8 @@ const CourierRegister: React.FC = () => {
 
   const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+    console.log(formData);
+
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 

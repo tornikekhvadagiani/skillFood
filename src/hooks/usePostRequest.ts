@@ -10,7 +10,7 @@ interface ICreateUsersData {
   password: string;
   personalId: string;
   phone: string;
-  profilepicture: File | null;
+  profilepicture: boolean | null;
   role: string;
 }
 interface ICreateCouriers {
@@ -21,7 +21,7 @@ interface ICreateCouriers {
   password: string;
   personalId: string;
   phone: string;
-  profilepicture: File | null;
+  profilepicture: boolean | null;
   role: string;
 }
 

@@ -84,7 +84,7 @@ const AdminRegister: React.FC = () => {
         phone: formData.phone,
         dates: formData.dates,
         password: formData.password,
-        profilepicture: formData.profilepicture || null,
+        profilepicture: true || null,
         role: formData.role,
       };
       usePostRequest({
@@ -95,6 +95,8 @@ const AdminRegister: React.FC = () => {
         toastError: "Failed To Create Admin Account",
         toastSuccess: "Admin Account Created Successfully",
         navigate: navigate,
+      }).then(() => {
+        // so here i want to upload image on cloudinary
       });
     }
   };

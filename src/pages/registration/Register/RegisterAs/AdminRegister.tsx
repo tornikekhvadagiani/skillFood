@@ -6,6 +6,7 @@ import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import BlueButton from "../../../../components/BlueButton";
 import usePostRequest from "../../../../hooks/usePostRequest";
 import { useNavigate } from "react-router-dom";
+import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
 
 const AdminRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -53,7 +54,7 @@ const AdminRegister: React.FC = () => {
     if (stage > 1) setStage((prev) => prev - 1);
   };
 
-  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
@@ -73,7 +74,15 @@ const AdminRegister: React.FC = () => {
       hasError = true;
       toast.error("Please fill in the lng field");
     }
-    console.log(formData);
+    let profilePictureUrl: string | null = null;
+
+    if (formData.profilepicture) {
+      profilePictureUrl = await useCloudinaryUpload(formData.profilepicture);
+      if (!profilePictureUrl) {
+        toast.error("Image upload failed");
+        return;
+      }
+    }
     setErrors(newErrors);
     if (!hasError) {
       const requestData = {
@@ -84,7 +93,7 @@ const AdminRegister: React.FC = () => {
         phone: formData.phone,
         dates: formData.dates,
         password: formData.password,
-        profilepicture: true || null,
+        profilepicture: profilePictureUrl,
         role: formData.role,
       };
       usePostRequest({
@@ -95,8 +104,6 @@ const AdminRegister: React.FC = () => {
         toastError: "Failed To Create Admin Account",
         toastSuccess: "Admin Account Created Successfully",
         navigate: navigate,
-      }).then(() => {
-        // so here i want to upload image on cloudinary
       });
     }
   };

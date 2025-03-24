@@ -5,18 +5,26 @@ interface AuthContextType {
   user: UserData | null;
   login: (userData: UserData) => void;
   logout: () => void;
+  isLoggedIn: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
-  const login = (userData: UserData) => setUser(userData);
-  const logout = () => setUser(null);
-  console.log(user);
+  const login = (userData: UserData) => {
+    setUser(userData);
+    setIsLoggedIn(true);
+  };
+  const logout = () => {
+    setUser(null);
+    setIsLoggedIn(false);
+  };
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(user));
+  console.log(isLoggedIn);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

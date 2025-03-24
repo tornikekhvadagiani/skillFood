@@ -6,6 +6,7 @@ import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import BlueButton from "../../../../components/BlueButton";
 import usePostRequest from "../../../../hooks/usePostRequest";
 import { useNavigate } from "react-router-dom";
+import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
 
 const UserRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -52,7 +53,7 @@ const UserRegister: React.FC = () => {
     if (stage > 1) setStage((prev) => prev - 1);
   };
 
-  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
@@ -74,6 +75,15 @@ const UserRegister: React.FC = () => {
     }
 
     setErrors(newErrors);
+    let profilePictureUrl: string | null = null;
+
+    if (formData.profilepicture) {
+      profilePictureUrl = await useCloudinaryUpload(formData.profilepicture);
+      if (!profilePictureUrl) {
+        return;
+      }
+    }
+
     if (!hasError) {
       const requestData = {
         email: formData.email,
@@ -84,7 +94,7 @@ const UserRegister: React.FC = () => {
         password: formData.password,
         personalId: formData.personalId,
         phone: formData.phone,
-        profilepicture: formData.profilepicture || null,
+        profilepicture: profilePictureUrl,
         role: formData.role,
       };
       usePostRequest({

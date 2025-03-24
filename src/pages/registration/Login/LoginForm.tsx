@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import MyForm from "../../../components/MyForm";
 import { toast } from "react-toastify";
+import { useAuth } from "../../../contexts/AuthContext";
 import useGetRequest from "../../../hooks/useGetRequest";
+import { ClipLoader } from "react-spinners";
+
 interface LoginFormProps {
   registerAs: string;
 }
-import { useAuth } from "../../../contexts/AuthContext";
+
 const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
   const [formData, setFormData] = useState<{ email: string; password: string }>(
     {
@@ -18,14 +20,26 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
   const [errors, setErrors] = useState<{ email?: boolean; password?: boolean }>(
     {}
   );
-  const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+
+  const [users, setUsers] = useState<any[]>([]);
+
   const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
   const { login } = useAuth();
-  const { data: users } = useGetRequest({
+
+  // Get the data via useGetRequest
+  const { data, error, loading } = useGetRequest({
     baseUrl: `${VITE_API_URL}/${registerAs}`,
     key: VITE_COURIERS_KEY,
   });
+
+  useEffect(() => {
+    if (data) {
+      setUsers(data);
+    }
+    if (error) {
+      toast.error(error);
+    }
+  }, [data, error]);
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -34,7 +48,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
   const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
-    setLoading(true);
 
     if (!formData.email || !formData.password) {
       setErrors({
@@ -42,13 +55,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
         password: !formData.password,
       });
       toast.error("Please fill in all fields.");
-      setLoading(false);
       return;
     }
 
-    if (!users) {
-      toast.error("Failed to load users.");
-      setLoading(false);
+    if (!users || users.length === 0) {
+      toast.error("No users found.");
       return;
     }
 
@@ -61,11 +72,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Login successful!");
       login(user);
-      navigate("/dashboard");
     } else {
       toast.error("Invalid email or password.");
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -95,10 +104,23 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
     {
       name: "submit",
       type: "submit",
-      value: loading ? "Logging in..." : "Login",
+      value: "Login",
       inputClassName: "bg-var-blue text-white cursor-pointer",
     },
   ];
+
+  if (loading) {
+    return (
+      <ClipLoader
+        color={"royalblue"}
+        loading={loading}
+        size={150}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+        className="mx-auto "
+      />
+    );
+  }
 
   return (
     <MyForm

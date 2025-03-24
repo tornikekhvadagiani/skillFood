@@ -5,7 +5,7 @@ import LoginForm from "./LoginForm";
 import { Link } from "react-router-dom";
 
 const Login: React.FC = () => {
-  const [registerAs, setRegisterAs] = useState<string>("user");
+  const [registerAs, setRegisterAs] = useState<string>("users");
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-between py-10">

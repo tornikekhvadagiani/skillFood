@@ -10,12 +10,16 @@ interface IGetRequest {
 const useGetRequest = ({ baseUrl, key }: IGetRequest) => {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+
       try {
         const response = await axios.get(baseUrl, {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${key}`,
           },
         });
@@ -24,13 +28,17 @@ const useGetRequest = ({ baseUrl, key }: IGetRequest) => {
         console.error("GET Request Error:", error);
         toast.error("Something Went Wrong!");
         setError("Failed to fetch data.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData();
+    if (baseUrl && key) {
+      fetchData();
+    }
   }, [baseUrl, key]);
 
-  return { data, error };
+  return { data, error, loading };
 };
 
 export default useGetRequest;

@@ -6,6 +6,7 @@ import SelectCourierHours from "../../../../components/SelectCourierHours";
 import usePostRequest from "../../../../hooks/usePostRequest";
 import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
+import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -62,10 +63,8 @@ const CourierRegister: React.FC = () => {
     if (stage > 1) setStage((prev) => prev - 1);
   };
 
-  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
-    console.log(formData);
-
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
@@ -81,28 +80,39 @@ const CourierRegister: React.FC = () => {
     }
 
     setErrors(newErrors);
-    if (!hasError) {
-      const requestData = {
-        firstname: formData.firstname,
-        lastname: formData.lastname || null,
-        email: formData.email,
-        personalId: formData.personalId,
-        phone: formData.phone,
-        dates: workingHours,
-        password: formData.password,
-        profilepicture: formData.profilepicture || null,
-        role: formData.role,
-      };
-      usePostRequest({
-        baseUrl: VITE_API_URL,
-        key: VITE_COURIERS_KEY,
-        data: requestData,
-        endPoint: "couriers",
-        toastError: "Failed To Create Courier Account",
-        toastSuccess: "Courier Account Created Successfully",
-        navigate: navigate,
-      });
+    if (hasError) return;
+
+    let profilePictureUrl: string | null = null;
+
+    if (formData.profilepicture) {
+      profilePictureUrl = await useCloudinaryUpload(formData.profilepicture);
+      if (!profilePictureUrl) {
+        toast.error("Image upload failed");
+        return;
+      }
     }
+
+    const requestData = {
+      firstname: formData.firstname,
+      lastname: formData.lastname || null,
+      email: formData.email,
+      personalId: formData.personalId,
+      phone: formData.phone,
+      dates: formData.dates,
+      password: formData.password,
+      profilepicture: profilePictureUrl,
+      role: formData.role,
+    };
+
+    usePostRequest({
+      baseUrl: VITE_API_URL,
+      key: VITE_COURIERS_KEY,
+      data: requestData,
+      endPoint: "couriers",
+      toastError: "Failed To Create Admin Account",
+      toastSuccess: "Admin Account Created Successfully",
+      navigate: navigate,
+    });
   };
 
   const inputsStages: InputFieldProps[][] = [

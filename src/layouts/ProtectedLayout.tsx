@@ -1,9 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const ProtectedLayout: React.FC = () => {
-  const isAuthenticated = false;
+  const { isLoggedIn } = useAuth();
+  console.log(isLoggedIn);
 
-  return isAuthenticated ? (
+  return isLoggedIn ? (
     <>
       <h1>Outlet</h1>
       <Outlet />

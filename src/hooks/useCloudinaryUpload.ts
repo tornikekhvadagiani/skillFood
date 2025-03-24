@@ -18,7 +18,6 @@ export const useCloudinaryUpload = (file: File): Promise<string | null> => {
       );
 
       const data = await response.json();
-      console.log("Cloudinary Response:", data);
 
       if (!data.secure_url) {
         throw new Error("Failed to retrieve image URL from Cloudinary");

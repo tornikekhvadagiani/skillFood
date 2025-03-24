@@ -7,7 +7,7 @@ export interface UserData {
   phone: string;
   profilepicture?: File | null;
   vehicle?: string;
-  workingHours?: Record<string, string[]>;
+  dates?: Record<string, string[]>;
   lng?: string;
   lat?: string;
 }

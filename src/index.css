@@ -17,3 +17,7 @@ html,
   --color-var-blue: #3b82f6;
   --color-var-black-transparent: rgba(0, 0, 0, 0.799);
 }
+.myContainer {
+  width: 80%;
+  margin: auto;
+}

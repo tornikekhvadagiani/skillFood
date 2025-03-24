@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../contexts/AuthContext";
 import useGetRequest from "../../../hooks/useGetRequest";
 import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
   registerAs: string;
@@ -25,6 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
 
   const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   // Get the data via useGetRequest
   const { data, error, loading } = useGetRequest({
@@ -71,6 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Login successful!");
+      navigate("/");
       login(user);
     } else {
       toast.error("Invalid email or password.");

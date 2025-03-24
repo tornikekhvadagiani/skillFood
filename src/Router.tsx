@@ -5,6 +5,7 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 import RegistrationLayout from "./layouts/RegistrationLayout";
 import Login from "./pages/registration/Login/Login";
 import Register from "./pages/registration/Register/Register";
+import Profile from "./pages/profile/Profile";
 
 const Router = () => {
   const isAuthenticated = false;
@@ -13,7 +14,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<ProtectedLayout />}>
-          <Route index element={<Home />} />
+          <Route index element={<Profile />} />
         </Route>
         <Route path="/registration" element={<RegistrationLayout />}>
           <Route path="login" element={<Login />} />

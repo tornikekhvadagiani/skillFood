@@ -98,10 +98,11 @@ const CourierRegister: React.FC = () => {
       email: formData.email,
       personalId: formData.personalId,
       phone: formData.phone,
-      dates: formData.dates,
+      dates: workingHours,
       password: formData.password,
       profilepicture: profilePictureUrl,
       role: formData.role,
+      vehicle: formData.vehicle,
     };
 
     usePostRequest({

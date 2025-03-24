@@ -7,23 +7,27 @@ import BlueButton from "../../../../components/BlueButton";
 import usePostRequest from "../../../../hooks/usePostRequest";
 import { useNavigate } from "react-router-dom";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
+import Coordinates from "../../../../components/Coordinates";
+import { useAuth } from "../../../../contexts/AuthContext";
 
 const AdminRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
   const { VITE_API_URL, VITE_ADMINS_KEY } = import.meta.env;
+  const { coordinates } = useAuth();
   const navigate = useNavigate();
 
   const requiredFields: string[] = [
-    "role",
-    "firstname",
-    "email",
-    "personalId",
-    "phone",
-    "password",
-    "dates",
-    "vehicle",
+      "role",
+      "firstname",
+      "email",
+      "personalId",
+      "phone",
+      "password",
+      "dates",
+      "vehicle",
   ];
 
   const handleInputChange = (name: string, value: any) => {
@@ -59,7 +63,7 @@ const AdminRegister: React.FC = () => {
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    if (!formData["lat"]) {
+    if (coordinates.lat === 0) {
       newErrors["lat"] = true;
       hasError = true;
       toast.error("Please fill in the lat field");
@@ -69,7 +73,7 @@ const AdminRegister: React.FC = () => {
       hasError = true;
       toast.error("Please fill in the role field");
     }
-    if (!formData["lng"]) {
+    if (coordinates.lng === 0) {
       newErrors["lng"] = true;
       hasError = true;
       toast.error("Please fill in the lng field");
@@ -91,7 +95,8 @@ const AdminRegister: React.FC = () => {
         email: formData.email,
         personalId: formData.personalId,
         phone: formData.phone,
-        dates: formData.dates,
+        lng: coordinates.lng,
+        lat: coordinates.lat,
         password: formData.password,
         profilepicture: profilePictureUrl,
         role: formData.role,
@@ -175,14 +180,14 @@ const AdminRegister: React.FC = () => {
         name: "lng",
         type: "text",
         placeholder: "Enter Adress LNG",
-        value: formData.lng || "",
+        value: coordinates.lng || "",
         onChange: (e) => handleInputChange("lng", e.target.value),
       },
       {
         name: "lat",
         type: "text",
         placeholder: "Enter Adress LAT",
-        value: formData.lat || "",
+        value: coordinates.lat || "",
         onChange: (e) => handleInputChange("lat", e.target.value),
       },
       {
@@ -190,6 +195,9 @@ const AdminRegister: React.FC = () => {
         type: "button",
         value: "Enter Map",
         inputClassName: "cursor-pointer",
+        onClick: () => {
+          setIsMapOpen(true);
+        },
       },
       {
         name: "submit",
@@ -203,6 +211,18 @@ const AdminRegister: React.FC = () => {
 
   return (
     <>
+      {isMapOpen && (
+        <div className="left-0 top-0 px-10 fixed flex flex-col gap-2 justify-center items-center bg-var-black-transparent w-full h-full">
+          <Coordinates />
+          <button
+            className="hover:bg-blue-400 transition-all bg-var-blue px-6 py-2 text-white rounded-md cursor-pointer"
+            onClick={() => setIsMapOpen(false)}
+          >
+            Submit Changes
+          </button>
+        </div>
+      )}
+
       <StageForm
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}

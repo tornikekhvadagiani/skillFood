@@ -5,8 +5,8 @@ interface ICreateUsersData {
   email: string;
   firstname: string;
   lastname: string | null;
-  lat: string;
-  lng: string;
+  lat: number;
+  lng: number;
   password: string;
   personalId: string;
   phone: string;

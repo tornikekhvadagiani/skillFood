@@ -6,6 +6,8 @@ interface AuthContextType {
   login: (userData: UserData) => void;
   logout: () => void;
   isLoggedIn: boolean;
+  coordinates: { lat: number; lng: number };
+  setCoordinates: (value: { lat: number; lng: number }) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -13,7 +15,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(user));
-
+  const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
   const login = (userData: UserData) => {
     setUser(userData);
     setIsLoggedIn(true);
@@ -25,7 +27,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoggedIn }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, isLoggedIn, coordinates, setCoordinates }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -17,7 +17,7 @@ const Login: React.FC = () => {
           {registerAs[0].toUpperCase() + registerAs.slice(1)} Login
         </h1>
         <div className=" h-full flex flex-col justify-center ">
-          <LoginForm />
+          <LoginForm registerAs={registerAs} />
         </div>
         <Link
           to={"/registration/register"}

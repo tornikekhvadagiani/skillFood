@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface ICreateUsersData {

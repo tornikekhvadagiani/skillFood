@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MyForm from "../../../components/MyForm";
 import { toast } from "react-toastify";
 import useGetRequest from "../../../hooks/useGetRequest";
-
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  registerAs: string;
+}
+const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
   const [formData, setFormData] = useState<{ email: string; password: string }>(
     {
       email: "",
       password: "",
     }
   );
+
   const [errors, setErrors] = useState<{ email?: boolean; password?: boolean }>(
     {}
   );
@@ -19,8 +22,8 @@ const LoginForm: React.FC = () => {
   const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
 
   // Custom hook call
-  const { data: users, error } = useGetRequest({
-    baseUrl: `https://crudapi.co.uk/api/v1/couriers`,
+  const { data: users } = useGetRequest({
+    baseUrl: `${VITE_API_URL}/${registerAs}`,
     key: VITE_COURIERS_KEY,
   });
 
@@ -63,6 +66,13 @@ const LoginForm: React.FC = () => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    setFormData({
+      email: "",
+      password: "",
+    });
+  }, [registerAs]);
 
   const loginInputs = [
     {

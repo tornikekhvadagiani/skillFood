@@ -9,16 +9,16 @@ const ButtonsList = (props: { setRegisterAs: (title: string) => void }) => {
   const buttonList: IButtonList[] = [
     {
       title: "User",
-      setRegisterAs: "user",
+      setRegisterAs: "users",
     },
 
     {
       title: "Courier",
-      setRegisterAs: "courier",
+      setRegisterAs: "couriers",
     },
     {
       title: "Admin",
-      setRegisterAs: "admin",
+      setRegisterAs: "admins",
     },
   ];
   const [activeIndex, setActiveIndex] = useState<number>(0);

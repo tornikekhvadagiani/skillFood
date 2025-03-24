@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import AdminRegister from "./RegisterAs/AdminRegister";
 
 const Register: React.FC = () => {
-  const a: string = "user";
+
 
   const RenderRegister = () => {
     switch (registerAs) {

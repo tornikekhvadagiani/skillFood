@@ -8,7 +8,6 @@ import usePutRequest from "../../../../hooks/usePutRequest"; // Import the put r
 import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
-import { setDefault } from "../../../../components/setDefault";
 import { useTransformedWorkingHours } from "../../../../hooks/useTransformedWorkingHours";
 
 const CourierRegister: React.FC = () => {
@@ -65,7 +64,7 @@ const CourierRegister: React.FC = () => {
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    if (Object.keys(workingHours).length < 1) {
+    if (Object.keys(workingHours).length < 5) {
       newErrors["workingHours"] = true;
       hasError = true;
       toast.error("Please select at least 5 working days");
@@ -208,11 +207,13 @@ const CourierRegister: React.FC = () => {
 
   return (
     <>
-      <SelectCourierHours
-        isOpen={hoursModalActive}
-        setIsOpen={setHoursModalActive}
-        onTimeSelectionChange={handleTimeSelectionChange}
-      />
+      {hoursModalActive && (
+        <SelectCourierHours
+          isOpen={hoursModalActive}
+          setIsOpen={setHoursModalActive}
+          onTimeSelectionChange={handleTimeSelectionChange}
+        />
+      )}
       <StageForm
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}

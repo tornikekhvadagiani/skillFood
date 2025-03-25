@@ -28,7 +28,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Get the data via useGetRequest
   const { data, error, loading } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
     key: VITE_COURIERS_KEY,

@@ -20,9 +20,8 @@ const Register: React.FC = () => {
   };
   const [registerAs, setRegisterAs] = useState<string>("users");
 
-
   return (
-    <div className="w-full h-full flex flex-col items-center justify-between py-10">
+    <div className="w-full h-full flex flex-col items-center justify-between py-10 ">
       <ButtonsList isLoginForm={false} setRegisterAs={setRegisterAs} />
       <h1 className="text-2xl font-bold mt-5 text-var-blue">
         {registerAs[0].toUpperCase() + registerAs.slice(1)} Register

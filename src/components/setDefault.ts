@@ -1,10 +1,11 @@
 import usePostRequest from "../hooks/usePostRequest";
 
 export const setDefault = () => {
+  const { VITE_DATES_KEY, VITE_API_URL } = import.meta.env;
   const jsonData = {
     Monday: {
-      "00:00": false,
-      "00:30": false,
+      "00:00": true,
+      "00:30": true,
       "01:00": true,
       "01:30": true,
       "02:00": true,
@@ -53,7 +54,7 @@ export const setDefault = () => {
       "23:30": true,
     },
     Tuesday: {
-      "00:00": false,
+      "00:00": true,
       "00:30": true,
       "01:00": true,
       "01:30": true,
@@ -61,7 +62,7 @@ export const setDefault = () => {
       "02:30": true,
       "03:00": true,
       "03:30": true,
-      "04:00": false,
+      "04:00": true,
       "04:30": true,
       "05:00": true,
       "05:30": true,
@@ -156,8 +157,8 @@ export const setDefault = () => {
       "00:00": true,
       "00:30": true,
       "01:00": true,
-      "01:30": false,
-      "02:00": false,
+      "01:30": true,
+      "02:00": true,
       "02:30": true,
       "03:00": true,
       "03:30": true,
@@ -206,8 +207,8 @@ export const setDefault = () => {
       "00:00": true,
       "00:30": true,
       "01:00": true,
-      "01:30": false,
-      "02:00": false,
+      "01:30": true,
+      "02:00": true,
       "02:30": true,
       "03:00": true,
       "03:30": true,
@@ -254,8 +255,8 @@ export const setDefault = () => {
     },
     Saturday: {
       "00:00": true,
-      "00:30": false,
-      "01:00": false,
+      "00:30": true,
+      "01:00": true,
       "01:30": true,
       "02:00": true,
       "02:30": true,
@@ -306,7 +307,7 @@ export const setDefault = () => {
       "00:00": true,
       "00:30": true,
       "01:00": true,
-      "01:30": false,
+      "01:30": true,
       "02:00": true,
       "02:30": true,
       "03:00": true,
@@ -315,7 +316,7 @@ export const setDefault = () => {
       "04:30": true,
       "05:00": true,
       "05:30": true,
-      "06:00": false,
+      "06:00": true,
       "06:30": true,
       "07:00": true,
       "07:30": true,
@@ -354,11 +355,11 @@ export const setDefault = () => {
     },
   };
   usePostRequest({
-    baseUrl: "https://crudapi.co.uk/api/v1",
+    baseUrl: VITE_API_URL,
     endPoint: "dates",
-    key: "_Nk1smAzmY9Nl4tPai9YPb3T_FXSC1XiC4AFeCWIxkjlqA9v5g",
+    key: VITE_DATES_KEY,
     data: jsonData,
-    toastError: "err",
-    toastSuccess: "default",
+    toastError: "something went wrong dates doesnt set to default ",
+    toastSuccess: "Dates succesfully set to default",
   });
 };

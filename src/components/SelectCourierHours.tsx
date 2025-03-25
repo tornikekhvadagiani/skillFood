@@ -1,7 +1,16 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
 import useGetRequest from "../hooks/useGetRequest";
-import { setDefault } from "./setDefault";
+import { toast } from "react-toastify";
+
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 const SelectCourierHours = ({
   isOpen,
@@ -23,23 +32,16 @@ const SelectCourierHours = ({
     key: VITE_DATES_KEY,
   });
 
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
+
 
   const toggleTimeSelection = (day: string, time: string) => {
-    if (!data[0]?.jsonData[day]?.[time]) {
+    if (!data[0].jsonData[day][time]) {
       toast.error("This Time is Already Taken!!");
       return;
     }
     setSelectedTimes((prev) => {
       const updatedTimes = { ...prev };
+
       if (!updatedTimes[day]) {
         updatedTimes[day] = new Set([time]);
       } else {
@@ -47,23 +49,28 @@ const SelectCourierHours = ({
         newSet.has(time) ? newSet.delete(time) : newSet.add(time);
         updatedTimes[day] = newSet;
       }
+
       return updatedTimes;
     });
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const formattedTimes: Record<string, string[]> = {};
+
     Object.keys(selectedTimes).forEach((day) => {
       formattedTimes[day] = Array.from(selectedTimes[day] || new Set());
     });
+
     onTimeSelectionChange(formattedTimes);
+    
+
     setIsOpen(false);
   };
-  
-  if (loading) return <h1>Loading...</h1>;
+
+  if (loading) return <h1> Loading...</h1>;
 
   return (
-    isOpen && (
+    !isOpen && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-auto text-center">
           <h2 className="text-lg font-semibold mb-4">Select Working Hours</h2>
@@ -74,14 +81,13 @@ const SelectCourierHours = ({
                 <h3 className="font-semibold mb-2 text-2xl">{day}</h3>
                 <div className="grid grid-cols-4 gap-2">
                   {data &&
-                    data[0]?.jsonData[day] &&
-                    Object.keys(data[0].jsonData[day]).map((time: string) => {
+                    Object.keys(data[0][day]).map((time: string) => {
                       return (
                         <button
                           key={`${day}-${time}`}
                           className={`p-2 text-xs border rounded-md cursor-pointer
                           ${
-                            !data[0]?.jsonData[day][time] &&
+                            !data[0].jsonData[day]?.has(time) &&
                             "!cursor-not-allowed bg-gray-400"
                           }
                           ${

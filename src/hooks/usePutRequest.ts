@@ -1,30 +1,41 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export interface IData {}
-
-interface IPostReq {
-  url: string;
+interface IPutReq {
+  baseUrl: string;
   key: string;
-  uuid: string;
-  data: IData;
-  navigate: (path: string) => void;
+  data: any;
+  endPoint: string;
+  toastSuccess?: string;
+  toastError?: string;
+  navigate?: (navigateTo: string) => void;
+  navigateUrl?: string;
 }
 
-const usePutRequest = async ({ url, key, uuid, data }: IPostReq) => {
+const usePutRequest = async ({
+  baseUrl,
+  key,
+  data,
+  endPoint,
+  toastSuccess,
+  toastError,
+  navigate,
+  navigateUrl,
+}: IPutReq) => {
   try {
-    const response = await axios.put(`${url}/${uuid}`, data, {
+    const response = await axios.put(`${baseUrl}/${endPoint}`, data, {
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
       },
-      
     });
 
+    navigate && navigateUrl && navigate(navigateUrl);
+    toast.success(toastSuccess);
     return response.data;
   } catch (error) {
     console.error("PUT Request Error:", error);
-    toast.error("Something Went Wrong!");
+    toast.error(toastError);
     throw error;
   }
 };

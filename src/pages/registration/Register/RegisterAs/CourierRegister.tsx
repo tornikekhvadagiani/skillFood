@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import BlueButton from "../../../../components/BlueButton";
 import SelectCourierHours from "../../../../components/SelectCourierHours";
 import usePostRequest from "../../../../hooks/usePostRequest";
+import usePutRequest from "../../../../hooks/usePutRequest"; // Import the put request
 import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
@@ -19,17 +20,7 @@ const CourierRegister: React.FC = () => {
   const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
   const navigate = useNavigate();
 
-  const requiredFields: string[] = [
-    // "role",
-    // "firstname",
-    // "email",
-    // "personalId",
-    // "phone",
-    // "password",
-    // "dates",
-    // "vehicle",
-  ];
-
+  const requiredFields: string[] = [];
 
   const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -106,7 +97,8 @@ const CourierRegister: React.FC = () => {
       vehicle: formData.vehicle,
     };
 
-    usePostRequest({
+
+    const courierData = await usePostRequest({
       baseUrl: VITE_API_URL,
       key: VITE_COURIERS_KEY,
       data: requestData,
@@ -116,6 +108,21 @@ const CourierRegister: React.FC = () => {
       navigate: navigate,
       navigateUrl: "/registration/login/couriers",
     });
+
+    if (courierData) {
+      const updateWorkingHoursData = {
+        workingHours: workingHours,
+      };
+
+      await usePutRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_COURIERS_KEY,
+        data: updateWorkingHoursData,
+        endPoint: `couriers/${courierData.id}`, 
+        toastError: "Failed To Update Working Hours",
+        toastSuccess: "Working Hours Updated Successfully",
+      });
+    }
   };
 
   const inputsStages: InputFieldProps[][] = [

@@ -6,9 +6,10 @@ import RegistrationLayout from "./layouts/RegistrationLayout";
 import Login from "./pages/registration/Login/Login";
 import Register from "./pages/registration/Register/Register";
 import Profile from "./pages/profile/Profile";
+import { useAuth } from "./contexts/AuthContext";
 
 const Router = () => {
-  const isAuthenticated = false;
+  const { isLoggedIn } = useAuth();
 
   return (
     <BrowserRouter>
@@ -23,9 +24,7 @@ const Router = () => {
 
         <Route
           path="*"
-          element={
-            <Navigate to={isAuthenticated ? "/" : "/registration/login"} />
-          }
+          element={<Navigate to={isLoggedIn ? "/" : "/registration/login"} />}
         />
       </Routes>
     </BrowserRouter>

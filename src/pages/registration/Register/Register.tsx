@@ -19,7 +19,7 @@ const Register: React.FC = () => {
     }
   };
   const [registerAs, setRegisterAs] = useState<string>("users");
-  console.log(registerAs);
+
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-between py-10">

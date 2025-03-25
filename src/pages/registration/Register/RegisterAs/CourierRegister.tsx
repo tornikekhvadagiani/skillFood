@@ -20,15 +20,16 @@ const CourierRegister: React.FC = () => {
   const navigate = useNavigate();
 
   const requiredFields: string[] = [
-    "role",
-    "firstname",
-    "email",
-    "personalId",
-    "phone",
-    "password",
-    "dates",
-    "vehicle",
+    // "role",
+    // "firstname",
+    // "email",
+    // "personalId",
+    // "phone",
+    // "password",
+    // "dates",
+    // "vehicle",
   ];
+
 
   const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));

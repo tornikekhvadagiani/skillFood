@@ -30,8 +30,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
 
   // Get the data via useGetRequest
   const { data, error, loading } = useGetRequest({
-    baseUrl: `${VITE_API_URL}/${loginType}`,
+    baseUrl: `${VITE_API_URL}`,
     key: VITE_COURIERS_KEY,
+    endPoint: loginType,
   });
 
   useEffect(() => {

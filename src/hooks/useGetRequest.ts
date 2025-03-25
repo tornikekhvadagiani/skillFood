@@ -5,9 +5,10 @@ import { toast } from "react-toastify";
 interface IGetRequest {
   baseUrl: string;
   key: string;
+  endPoint: string;
 }
 
-const useGetRequest = ({ baseUrl, key }: IGetRequest) => {
+const useGetRequest = ({ baseUrl, key, endPoint }: IGetRequest) => {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -17,7 +18,7 @@ const useGetRequest = ({ baseUrl, key }: IGetRequest) => {
       setLoading(true);
 
       try {
-        const response = await axios.get(baseUrl, {
+        const response = await axios.get(`${baseUrl}/${endPoint}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${key}`,

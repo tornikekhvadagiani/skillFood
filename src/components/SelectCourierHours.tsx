@@ -1,14 +1,7 @@
 import { useState } from "react";
-
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+import { toast } from "react-toastify";
+import useGetRequest from "../hooks/useGetRequest";
+import { setDefault } from "./setDefault";
 
 const SelectCourierHours = ({
   isOpen,
@@ -22,17 +15,31 @@ const SelectCourierHours = ({
   const [selectedTimes, setSelectedTimes] = useState<
     Record<string, Set<string>>
   >({});
+  const { VITE_API_URL, VITE_DATES_KEY } = import.meta.env;
 
-  const timeOptions = Array.from({ length: 48 }, (_, i) => {
-    const hours = String(Math.floor(i / 2)).padStart(2, "0");
-    const minutes = i % 2 === 0 ? "00" : "30";
-    return `${hours}:${minutes}`;
+  const { data, error, loading } = useGetRequest({
+    baseUrl: `${VITE_API_URL}`,
+    endPoint: "dates",
+    key: VITE_DATES_KEY,
   });
 
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
   const toggleTimeSelection = (day: string, time: string) => {
+    if (!data[0]?.jsonData[day]?.[time]) {
+      toast.error("This Time is Already Taken!!");
+      return;
+    }
     setSelectedTimes((prev) => {
       const updatedTimes = { ...prev };
-
       if (!updatedTimes[day]) {
         updatedTimes[day] = new Set([time]);
       } else {
@@ -40,20 +47,20 @@ const SelectCourierHours = ({
         newSet.has(time) ? newSet.delete(time) : newSet.add(time);
         updatedTimes[day] = newSet;
       }
-
       return updatedTimes;
     });
   };
+
   const handleConfirm = () => {
     const formattedTimes: Record<string, string[]> = {};
-
     Object.keys(selectedTimes).forEach((day) => {
       formattedTimes[day] = Array.from(selectedTimes[day] || new Set());
     });
-
     onTimeSelectionChange(formattedTimes);
     setIsOpen(false);
   };
+  
+  if (loading) return <h1>Loading...</h1>;
 
   return (
     isOpen && (
@@ -66,19 +73,28 @@ const SelectCourierHours = ({
               <div key={day}>
                 <h3 className="font-semibold mb-2 text-2xl">{day}</h3>
                 <div className="grid grid-cols-4 gap-2">
-                  {timeOptions.map((time) => (
-                    <button
-                      key={`${day}-${time}`}
-                      className={`p-2 text-xs border rounded-md cursor-pointer ${
-                        selectedTimes[day]?.has(time)
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200"
-                      }`}
-                      onClick={() => toggleTimeSelection(day, time)}
-                    >
-                      {time}
-                    </button>
-                  ))}
+                  {data &&
+                    data[0]?.jsonData[day] &&
+                    Object.keys(data[0].jsonData[day]).map((time: string) => {
+                      return (
+                        <button
+                          key={`${day}-${time}`}
+                          className={`p-2 text-xs border rounded-md cursor-pointer
+                          ${
+                            !data[0]?.jsonData[day][time] &&
+                            "!cursor-not-allowed bg-gray-400"
+                          }
+                          ${
+                            selectedTimes[day]?.has(time)
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-200"
+                          }`}
+                          onClick={() => toggleTimeSelection(day, time)}
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
                 </div>
               </div>
             ))}

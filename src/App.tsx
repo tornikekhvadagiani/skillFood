@@ -2,7 +2,6 @@ import React from "react";
 import Router from "./Router";
 import { ToastContainer } from "react-toastify";
 
-
 const App: React.FC = () => {
   // const { VITE_API_URL, VITE_USERS_KEY } = import.meta.env;
 

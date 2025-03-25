@@ -222,7 +222,6 @@ const UserRegister: React.FC = () => {
       },
     ],
   ];
-  console.log(coordinates);
 
   return (
     <>

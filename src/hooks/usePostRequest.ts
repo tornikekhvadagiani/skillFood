@@ -9,10 +9,10 @@ import {
 interface IPostReq {
   baseUrl: string;
   key: string;
-  data: ICreateUsersData | ICreateCouriers | ICreateAdminData;
+  data: ICreateUsersData | ICreateCouriers | ICreateAdminData | any;
   endPoint: string;
-  toastSuccess: string;
-  toastError: string;
+  toastSuccess?: string;
+  toastError?: string;
   navigate?: (navigateTo: string) => void;
   navigateUrl?: string;
 }

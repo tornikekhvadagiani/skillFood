@@ -8,6 +8,8 @@ import usePutRequest from "../../../../hooks/usePutRequest"; // Import the put r
 import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
+import { setDefault } from "../../../../components/setDefault";
+import { useTransformedWorkingHours } from "../../../../hooks/useTransformedWorkingHours";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -17,7 +19,9 @@ const CourierRegister: React.FC = () => {
   const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
     {}
   );
-  const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
+  const transformedWorkingHours = useTransformedWorkingHours(workingHours);
+  const { VITE_API_URL, VITE_COURIERS_KEY, VITE_DATES_KEY, VITE_DATES_UUID } =
+    import.meta.env;
   const navigate = useNavigate();
 
   const requiredFields: string[] = [];
@@ -57,10 +61,11 @@ const CourierRegister: React.FC = () => {
 
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    if (Object.keys(workingHours).length < 5) {
+    if (Object.keys(workingHours).length < 1) {
       newErrors["workingHours"] = true;
       hasError = true;
       toast.error("Please select at least 5 working days");
@@ -97,7 +102,6 @@ const CourierRegister: React.FC = () => {
       vehicle: formData.vehicle,
     };
 
-
     const courierData = await usePostRequest({
       baseUrl: VITE_API_URL,
       key: VITE_COURIERS_KEY,
@@ -108,17 +112,12 @@ const CourierRegister: React.FC = () => {
       navigate: navigate,
       navigateUrl: "/registration/login/couriers",
     });
-
     if (courierData) {
-      const updateWorkingHoursData = {
-        workingHours: workingHours,
-      };
-
       await usePutRequest({
         baseUrl: VITE_API_URL,
-        key: VITE_COURIERS_KEY,
-        data: updateWorkingHoursData,
-        endPoint: `couriers/${courierData.id}`, 
+        key: VITE_DATES_KEY,
+        data: transformedWorkingHours,
+        endPoint: `dates/${VITE_DATES_UUID}`,
         toastError: "Failed To Update Working Hours",
         toastSuccess: "Working Hours Updated Successfully",
       });

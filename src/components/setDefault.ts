@@ -357,7 +357,7 @@ export const setDefault = () => {
     baseUrl: "https://crudapi.co.uk/api/v1",
     endPoint: "dates",
     key: "_Nk1smAzmY9Nl4tPai9YPb3T_FXSC1XiC4AFeCWIxkjlqA9v5g",
-    data: { jsonData },
+    data: jsonData,
     toastError: "err",
     toastSuccess: "default",
   });

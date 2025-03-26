@@ -27,7 +27,7 @@ const CardList: React.FC = () => {
       await useDeleteRequest({
         baseUrl: VITE_API_URL,
         key: activeIndex === 1 ? VITE_USERS_KEY : VITE_COURIERS_KEY,
-        endPoint: "users",
+        endPoint: activeIndex === 1 ? "users" : "couriers",
         uuid,
         toastSuccess: "User deleted successfully!",
         toastError: "Failed to delete user.",

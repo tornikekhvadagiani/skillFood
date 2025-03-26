@@ -16,6 +16,7 @@ html,
 @theme {
   --color-var-blue: #3b82f6;
   --color-var-black-transparent: rgba(0, 0, 0, 0.799);
+  --color-var-white-transparent: rgba(255, 255, 255, 0.8);
 }
 .myContainer {
   width: 80%;

@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import useUser from "../store/useUser";
 
 const RegistrationLayout: React.FC = () => {
-  const { isLoggedIn } = useAuth();
+  const { user } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
-    if (isLoggedIn) {
+    if (user) {
       navigate("/");
     }
   }, []);

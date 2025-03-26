@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import MyForm from "../../../components/MyForm";
 import { toast } from "react-toastify";
-import { useAuth } from "../../../contexts/AuthContext";
 import useGetRequest from "../../../hooks/useGetRequest";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import useUser from "../../../store/useUser";
 
 interface LoginFormProps {
   loginType: string;
@@ -26,7 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
 
   const { VITE_API_URL, VITE_COURIERS_KEY, VITE_ADMINS_KEY, VITE_USERS_KEY } =
     import.meta.env;
-  const { login } = useAuth();
+  const { login } = useUser();
   const navigate = useNavigate();
   const correctKey = () => {
     switch (loginType) {

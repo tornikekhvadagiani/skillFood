@@ -1,12 +1,12 @@
 import React from "react";
 import NavbarLinks from "./NavbarLinks";
-import { useAuth } from "../../contexts/AuthContext";
 import { isString } from "@cloudinary/url-gen/internal/utils/dataStructureUtils";
 import { useNavigate } from "react-router-dom";
+import useUser from "../../store/useUser";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout } = useUser();
   return (
     <nav className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">

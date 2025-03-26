@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
 import L, { LatLngExpression } from "leaflet";
-import { useAuth } from "../contexts/AuthContext";
+import useUser from "../store/useUser";
 
 const markerIcon = new L.Icon({
   iconUrl:
@@ -20,7 +20,7 @@ const LocationMarker: React.FC<{
   setPosition: (coords: ICoordinates) => void;
   position: ICoordinates | null;
 }> = ({ position, setPosition }) => {
-  const { setCoordinates } = useAuth();
+  const { setCoordinates } = useUser();
 
   useMapEvents({
     click(e: L.LeafletMouseEvent) {

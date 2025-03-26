@@ -1,8 +1,8 @@
 import React from "react";
-import { useAuth } from "../../../contexts/AuthContext";
+import useUser from "../../../store/useUser";
 
 const AcountInfoHeader: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useUser();
   return (
     <div className="flex flex-col gap-1 justify-center text-center mt-6">
       <h3 className=" text-mainBlack  text-2xl font-bold capitalize tracking-widest">

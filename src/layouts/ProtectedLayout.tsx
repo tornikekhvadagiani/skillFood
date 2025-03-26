@@ -1,13 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import Navbar from "../components/navbar/Navbar";
 
 const ProtectedLayout: React.FC = () => {
   const { isLoggedIn } = useAuth();
-  console.log(isLoggedIn);
 
-  return isLoggedIn ? (
+  return !isLoggedIn ? (
     <>
-      <h1>Outlet</h1>
+      <Navbar />
       <Outlet />
     </>
   ) : (

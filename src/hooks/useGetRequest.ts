@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { UserData } from "../interfaces/user-interface";
 
 interface IGetRequest {
   baseUrl: string;
@@ -9,7 +10,7 @@ interface IGetRequest {
 }
 
 const useGetRequest = ({ baseUrl, key, endPoint }: IGetRequest) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<UserData | UserData[] | any>();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 

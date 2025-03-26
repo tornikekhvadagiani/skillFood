@@ -2,8 +2,10 @@ import React from "react";
 import NavbarLinks from "./NavbarLinks";
 import { useAuth } from "../../contexts/AuthContext";
 import { isString } from "@cloudinary/url-gen/internal/utils/dataStructureUtils";
+import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   return (
     <nav className="bg-gray-800">
@@ -21,13 +23,14 @@ const Navbar: React.FC = () => {
               Log Out
             </h1>
             <img
-              className="size-10 rounded-full"
+              className="size-10 rounded-full cursor-pointer object-cover"
               src={
                 isString(user?.profilepicture)
                   ? user.profilepicture
                   : "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png"
               }
               alt="User Avatar"
+              onClick={() => navigate("/profile")}
             />
           </div>
         </div>

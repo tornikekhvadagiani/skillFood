@@ -5,9 +5,10 @@ export interface UserData {
   password: string;
   personalId: string;
   phone: string;
-  profilepicture?: File | null;
+  profilepicture?: File | string;
   vehicle?: string;
   dates?: Record<string, string[]>;
   lng?: string;
   lat?: string;
+  uuid?: string;
 }

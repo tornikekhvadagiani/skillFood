@@ -1,6 +1,7 @@
 import React from "react";
 import { UserData } from "../../../interfaces/user-interface";
 import { isString } from "@cloudinary/url-gen/internal/utils/dataStructureUtils";
+import { useNavigate } from "react-router-dom";
 
 interface ICard {
   onDelete: () => void;
@@ -18,6 +19,7 @@ const Card: React.FC<UserData & ICard> = ({
   uuid,
   onDelete,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className=" flex w-full h-full items-center justify-center p-6">
       <div className="flex items-center border border-gray-400 rounded-lg p-6 shadow-lg w-full group relative">
@@ -32,7 +34,9 @@ const Card: React.FC<UserData & ICard> = ({
         />
         <div className="absolute gap-4 bg-var-white-transparent border w-full h-full inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
-            onClick={() => alert(uuid)}
+            onClick={() =>
+              navigate(`/profile/${lat ? "users" : "couriers"}/${uuid}`)
+            }
             className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md transition-all duration-200"
           >
             Edit {lat ? "User" : "Courier"}

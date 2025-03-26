@@ -17,8 +17,8 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<ProtectedLayout />}>
           <Route index element={<AdminHome />} />
-
           <Route index path="profile" element={<Profile />} />
+          <Route path="profile/:role/:uuid" element={<Profile />} />
         </Route>
         <Route path="/registration" element={<RegistrationLayout />}>
           <Route path="login/:loginType" element={<Login />} />

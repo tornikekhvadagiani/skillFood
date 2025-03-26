@@ -7,8 +7,8 @@ import BlueButton from "../../../../components/BlueButton";
 import usePostRequest from "../../../../hooks/usePostRequest";
 import { useNavigate } from "react-router-dom";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
-import { useAuth } from "../../../../contexts/AuthContext";
 import Coordinates from "../../../../components/Coordinates";
+import useUser from "../../../../store/useUser";
 
 const UserRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -16,7 +16,7 @@ const UserRegister: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const { VITE_API_URL, VITE_USERS_KEY } = import.meta.env;
   const navigate = useNavigate();
-  const { coordinates, setCoordinates } = useAuth();
+  const { coordinates, setCoordinates } = useUser();
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
   const requiredFields: string[] = [
     "role",

@@ -1,16 +1,16 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-// import Home from "./pages/home/Home";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 
 import RegistrationLayout from "./layouts/RegistrationLayout";
 import Login from "./pages/registration/Login/Login";
 import Register from "./pages/registration/Register/Register";
 import Profile from "./pages/profile/Profile";
-import { useAuth } from "./contexts/AuthContext";
+
 import AdminHome from "./pages/home/adminhome/AdminHome";
+import useUser from "./store/useUser";
 
 const Router = () => {
-  const { isLoggedIn } = useAuth();
+  const { user } = useUser();
 
   return (
     <BrowserRouter>
@@ -27,7 +27,7 @@ const Router = () => {
 
         <Route
           path="*"
-          element={<Navigate to={!isLoggedIn ? "/" : "/registration/login"} />}
+          element={<Navigate to={user ? "/" : "/registration/login"} />}
         />
       </Routes>
     </BrowserRouter>

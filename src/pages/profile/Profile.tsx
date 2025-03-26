@@ -1,11 +1,12 @@
-import { useAuth } from "../../contexts/AuthContext";
 import AccountInfo from "./components/AccountInfo";
 import SecurityButtons from "./components/SecurityButtons";
 import AcountInfoHeader from "./components/AcountInfoHeader";
 import ProfilePicture from "./components/ProfilePicture";
+import useUser from "../../store/useUser";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user } = useUser();
+  
 
   return (
     <div className=" flex flex-col w-full h-full justify-center items-center text-center">

@@ -1,7 +1,7 @@
 import React from "react";
-import { useAuth } from "../../../contexts/AuthContext";
+import useUser from "../../../store/useUser";
 const SecurityButtons: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useUser();
 
   return (
     <div className="mt-12">

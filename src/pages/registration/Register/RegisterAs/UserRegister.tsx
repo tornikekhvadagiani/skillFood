@@ -25,7 +25,6 @@ const UserRegister: React.FC = () => {
     "personalId",
     "phone",
     "password",
-    "dates",
     "vehicle",
   ];
 

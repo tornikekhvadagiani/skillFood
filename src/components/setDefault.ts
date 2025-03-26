@@ -1,7 +1,7 @@
-import usePostRequest from "../hooks/usePostRequest";
+import usePutRequest from "../hooks/usePutRequest";
 
 export const setDefault = () => {
-  const { VITE_DATES_KEY, VITE_API_URL } = import.meta.env;
+  const { VITE_DATES_KEY, VITE_DATES_UUID, VITE_API_URL } = import.meta.env;
   const jsonData = {
     Monday: {
       "00:00": true,
@@ -354,9 +354,9 @@ export const setDefault = () => {
       "23:30": true,
     },
   };
-  usePostRequest({
+  usePutRequest({
     baseUrl: VITE_API_URL,
-    endPoint: "dates",
+    endPoint: `dates/${VITE_DATES_UUID}`,
     key: VITE_DATES_KEY,
     data: jsonData,
     toastError: "something went wrong dates doesnt set to default ",

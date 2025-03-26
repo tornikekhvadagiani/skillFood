@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
 import { useTransformedWorkingHours } from "../../../../hooks/useTransformedWorkingHours";
+import { setDefault } from "../../../../components/setDefault";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -23,7 +24,14 @@ const CourierRegister: React.FC = () => {
     import.meta.env;
   const navigate = useNavigate();
 
-  const requiredFields: string[] = [];
+  const requiredFields: string[] = [
+    "firstname",
+    "email",
+    "personalId",
+    "phone",
+    "password",
+    "vehicle",
+  ];
 
   const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -207,13 +215,12 @@ const CourierRegister: React.FC = () => {
 
   return (
     <>
-      {hoursModalActive && (
-        <SelectCourierHours
-          isOpen={hoursModalActive}
-          setIsOpen={setHoursModalActive}
-          onTimeSelectionChange={handleTimeSelectionChange}
-        />
-      )}
+      <SelectCourierHours
+        isOpen={hoursModalActive}
+        setIsOpen={setHoursModalActive}
+        onTimeSelectionChange={handleTimeSelectionChange}
+      />
+
       <StageForm
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}

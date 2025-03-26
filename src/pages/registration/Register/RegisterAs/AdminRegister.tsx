@@ -24,7 +24,6 @@ const AdminRegister: React.FC = () => {
     "personalId",
     "phone",
     "password",
-    "dates",
     "vehicle",
   ];
 

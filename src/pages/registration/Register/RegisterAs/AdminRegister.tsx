@@ -12,7 +12,9 @@ const AdminRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
   const { VITE_API_URL, VITE_ADMINS_KEY } = import.meta.env;
+
   const navigate = useNavigate();
 
   const requiredFields: string[] = [
@@ -58,28 +60,16 @@ const AdminRegister: React.FC = () => {
     e?.preventDefault();
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
-
-    if (!formData["lat"]) {
-      newErrors["lat"] = true;
-      hasError = true;
-      toast.error("Please fill in the lat field");
-    }
     if (!formData["role"]) {
       newErrors["role"] = true;
       hasError = true;
       toast.error("Please fill in the role field");
-    }
-    if (!formData["lng"]) {
-      newErrors["lng"] = true;
-      hasError = true;
-      toast.error("Please fill in the lng field");
     }
     let profilePictureUrl: string | null = null;
 
     if (formData.profilepicture) {
       profilePictureUrl = await useCloudinaryUpload(formData.profilepicture);
       if (!profilePictureUrl) {
-        toast.error("Image upload failed");
         return;
       }
     }
@@ -91,7 +81,6 @@ const AdminRegister: React.FC = () => {
         email: formData.email,
         personalId: formData.personalId,
         phone: formData.phone,
-        dates: formData.dates,
         password: formData.password,
         profilepicture: profilePictureUrl,
         role: formData.role,
@@ -104,6 +93,7 @@ const AdminRegister: React.FC = () => {
         toastError: "Failed To Create Admin Account",
         toastSuccess: "Admin Account Created Successfully",
         navigate: navigate,
+        navigateUrl: "/registration/login/admins",
       });
     }
   };
@@ -168,22 +158,7 @@ const AdminRegister: React.FC = () => {
         type: "text",
         placeholder: "Enter role role",
         value: formData.role || "",
-
         onChange: (e) => handleInputChange("role", e.target.value),
-      },
-      {
-        name: "lng",
-        type: "text",
-        placeholder: "Enter Adress LNG",
-        value: formData.lng || "",
-        onChange: (e) => handleInputChange("lng", e.target.value),
-      },
-      {
-        name: "lat",
-        type: "text",
-        placeholder: "Enter Adress LAT",
-        value: formData.lat || "",
-        onChange: (e) => handleInputChange("lat", e.target.value),
       },
       {
         name: "submit",

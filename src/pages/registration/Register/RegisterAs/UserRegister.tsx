@@ -7,6 +7,8 @@ import BlueButton from "../../../../components/BlueButton";
 import usePostRequest from "../../../../hooks/usePostRequest";
 import { useNavigate } from "react-router-dom";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
+import { useAuth } from "../../../../contexts/AuthContext";
+import Coordinates from "../../../../components/Coordinates";
 
 const UserRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -14,6 +16,8 @@ const UserRegister: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const { VITE_API_URL, VITE_USERS_KEY } = import.meta.env;
   const navigate = useNavigate();
+  const { coordinates, setCoordinates } = useAuth();
+  const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
   const requiredFields: string[] = [
     "role",
     "firstname",
@@ -58,7 +62,7 @@ const UserRegister: React.FC = () => {
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
-    if (!formData["lat"]) {
+    if (!coordinates.lat) {
       newErrors["lat"] = true;
       hasError = true;
       toast.error("Please fill in the lat field");
@@ -68,7 +72,7 @@ const UserRegister: React.FC = () => {
       hasError = true;
       toast.error("Please fill in the role field");
     }
-    if (!formData["lng"]) {
+    if (!coordinates.lng) {
       newErrors["lng"] = true;
       hasError = true;
       toast.error("Please fill in the lng field");
@@ -89,8 +93,8 @@ const UserRegister: React.FC = () => {
         email: formData.email,
         firstname: formData.firstname,
         lastname: formData.lastname || null,
-        lat: formData.lat,
-        lng: formData.lng,
+        lng: coordinates.lng,
+        lat: coordinates.lat,
         password: formData.password,
         personalId: formData.personalId,
         phone: formData.phone,
@@ -105,7 +109,13 @@ const UserRegister: React.FC = () => {
         toastError: "Failed To Create Account",
         toastSuccess: "Account Created Succesfully",
         navigate: navigate,
-      });
+        navigateUrl: "/registration/login/users",
+      }).then(() =>
+        setCoordinates({
+          lat: null,
+          lng: null,
+        })
+      );
     }
   };
 
@@ -170,22 +180,38 @@ const UserRegister: React.FC = () => {
         type: "text",
         placeholder: "Enter role role",
         value: formData.role || "",
-
         onChange: (e) => handleInputChange("role", e.target.value),
       },
       {
         name: "lng",
         type: "text",
-        placeholder: "Enter Adress LNG",
-        value: formData.lng || "",
+        placeholder: "Enter Address LNG",
+        inputClassName: "pointer-events-none text-gray-500",
+
+        value: !coordinates.lat
+          ? "Use map pin to get correct LAT"
+          : coordinates.lat,
         onChange: (e) => handleInputChange("lng", e.target.value),
       },
+
       {
         name: "lat",
         type: "text",
         placeholder: "Enter Adress LAT",
-        value: formData.lat || "",
+        inputClassName: "pointer-events-none text-gray-500",
+        value: !coordinates.lng
+          ? "Use map pin to get correct LNG"
+          : coordinates.lng,
         onChange: (e) => handleInputChange("lat", e.target.value),
+      },
+      {
+        name: "map",
+        type: "button",
+        value: "Enter Map",
+        inputClassName: "cursor-pointer",
+        onClick: () => {
+          setIsMapOpen(true);
+        },
       },
       {
         name: "submit",
@@ -199,6 +225,17 @@ const UserRegister: React.FC = () => {
 
   return (
     <>
+      {isMapOpen && (
+        <div className="left-0 top-0 px-10 fixed flex flex-col gap-2 justify-center items-center bg-var-black-transparent w-full h-full">
+          <Coordinates />
+          <button
+            className="hover:bg-blue-400 transition-all bg-var-blue px-6 py-2 text-white rounded-md cursor-pointer"
+            onClick={() => setIsMapOpen(false)}
+          >
+            Submit Changes
+          </button>
+        </div>
+      )}
       <StageForm
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}

@@ -1,39 +1,20 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-
-interface ICreateUsersData {
-  email: string;
-  firstname: string;
-  lastname: string | null;
-  lat: string;
-  lng: string;
-  password: string;
-  personalId: string;
-  phone: string;
-  profilepicture: string | null;
-  role: string;
-}
-
-interface ICreateCouriers {
-  email: string;
-  firstname: string;
-  lastname: string | null;
-  dates: any;
-  password: string;
-  personalId: string;
-  phone: string;
-  profilepicture: string | null;
-  role: string;
-}
+import {
+  ICreateAdminData,
+  ICreateCouriers,
+  ICreateUsersData,
+} from "../interfaces/registration-interfaces";
 
 interface IPostReq {
   baseUrl: string;
   key: string;
-  data: ICreateUsersData | ICreateCouriers;
+  data: ICreateUsersData | ICreateCouriers | ICreateAdminData | any;
   endPoint: string;
-  toastSuccess: string;
-  toastError: string;
-  navigate: (navigateTo: string) => void;
+  toastSuccess?: string;
+  toastError?: string;
+  navigate?: (navigateTo: string) => void;
+  navigateUrl?: string;
 }
 
 const usePostRequest = async ({
@@ -44,6 +25,7 @@ const usePostRequest = async ({
   toastSuccess,
   toastError,
   navigate,
+  navigateUrl,
 }: IPostReq) => {
   try {
     const response = await axios.post(`${baseUrl}/${endPoint}`, [data], {
@@ -52,7 +34,7 @@ const usePostRequest = async ({
         "Content-Type": "application/json",
       },
     });
-    navigate("/");
+    navigate && navigateUrl && navigate(navigateUrl);
     toast.success(toastSuccess);
     return response.data;
   } catch (error) {

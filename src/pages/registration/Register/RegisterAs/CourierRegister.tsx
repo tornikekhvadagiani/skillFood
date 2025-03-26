@@ -4,9 +4,11 @@ import { toast } from "react-toastify";
 import BlueButton from "../../../../components/BlueButton";
 import SelectCourierHours from "../../../../components/SelectCourierHours";
 import usePostRequest from "../../../../hooks/usePostRequest";
+import usePutRequest from "../../../../hooks/usePutRequest"; // Import the put request
 import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
+import { useTransformedWorkingHours } from "../../../../hooks/useTransformedWorkingHours";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -16,19 +18,12 @@ const CourierRegister: React.FC = () => {
   const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
     {}
   );
-  const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
+  const transformedWorkingHours = useTransformedWorkingHours(workingHours);
+  const { VITE_API_URL, VITE_COURIERS_KEY, VITE_DATES_KEY, VITE_DATES_UUID } =
+    import.meta.env;
   const navigate = useNavigate();
 
-  const requiredFields: string[] = [
-    "role",
-    "firstname",
-    "email",
-    "personalId",
-    "phone",
-    "password",
-    "dates",
-    "vehicle",
-  ];
+  const requiredFields: string[] = [];
 
   const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -65,6 +60,7 @@ const CourierRegister: React.FC = () => {
 
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+
     let hasError = false;
     const newErrors: { [key: string]: boolean } = {};
 
@@ -98,21 +94,33 @@ const CourierRegister: React.FC = () => {
       email: formData.email,
       personalId: formData.personalId,
       phone: formData.phone,
-      dates: formData.dates,
+      dates: workingHours,
       password: formData.password,
       profilepicture: profilePictureUrl,
       role: formData.role,
+      vehicle: formData.vehicle,
     };
 
-    usePostRequest({
+    const courierData = await usePostRequest({
       baseUrl: VITE_API_URL,
       key: VITE_COURIERS_KEY,
       data: requestData,
       endPoint: "couriers",
-      toastError: "Failed To Create Admin Account",
-      toastSuccess: "Admin Account Created Successfully",
+      toastError: "Failed To Create Courier Account",
+      toastSuccess: "Courier Account Created Successfully",
       navigate: navigate,
+      navigateUrl: "/registration/login/couriers",
     });
+    if (courierData) {
+      await usePutRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_DATES_KEY,
+        data: transformedWorkingHours,
+        endPoint: `dates/${VITE_DATES_UUID}`,
+        toastError: "Failed To Update Working Hours",
+        toastSuccess: "Working Hours Updated Successfully",
+      });
+    }
   };
 
   const inputsStages: InputFieldProps[][] = [
@@ -199,11 +207,13 @@ const CourierRegister: React.FC = () => {
 
   return (
     <>
-      <SelectCourierHours
-        isOpen={hoursModalActive}
-        setIsOpen={setHoursModalActive}
-        onTimeSelectionChange={handleTimeSelectionChange}
-      />
+      {hoursModalActive && (
+        <SelectCourierHours
+          isOpen={hoursModalActive}
+          setIsOpen={setHoursModalActive}
+          onTimeSelectionChange={handleTimeSelectionChange}
+        />
+      )}
       <StageForm
         inputs={inputsStages[stage - 1]}
         onSubmit={handleSubmit}

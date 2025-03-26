@@ -4,12 +4,13 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../contexts/AuthContext";
 import useGetRequest from "../../../hooks/useGetRequest";
 import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
-  registerAs: string;
+  loginType: string;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
   const [formData, setFormData] = useState<{ email: string; password: string }>(
     {
       email: "",
@@ -25,11 +26,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
 
   const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
   const { login } = useAuth();
+  const navigate = useNavigate();
 
-  // Get the data via useGetRequest
   const { data, error, loading } = useGetRequest({
-    baseUrl: `${VITE_API_URL}/${registerAs}`,
+    baseUrl: `${VITE_API_URL}`,
     key: VITE_COURIERS_KEY,
+    endPoint: loginType,
   });
 
   useEffect(() => {
@@ -71,6 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Login successful!");
+      navigate("/");
       login(user);
     } else {
       toast.error("Invalid email or password.");
@@ -82,7 +85,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ registerAs }) => {
       email: "",
       password: "",
     });
-  }, [registerAs]);
+  }, [loginType]);
 
   const loginInputs = [
     {

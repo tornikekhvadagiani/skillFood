@@ -1,7 +1,7 @@
 import React from "react";
 import CardList from "./CardList";
 
-const Home: React.FC = () => {
+const AdminHome: React.FC = () => {
   return (
     <div>
       <CardList />
@@ -9,4 +9,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default AdminHome;

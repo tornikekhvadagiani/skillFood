@@ -13,7 +13,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<UserData | null>(null);
+  const storedData = localStorage.getItem("loginedAccount");
+  const parsed = storedData ? JSON.parse(storedData) : null;
+
+  const [user, setUser] = useState<UserData | null>(parsed);
+
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(user));
   const [coordinates, setCoordinates] = useState<{
     lat: string | null;
@@ -31,6 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
+    localStorage.removeItem("loginedAccount");
   };
 
   return (

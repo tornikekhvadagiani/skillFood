@@ -1,5 +1,5 @@
 import React from "react";
-import BlueButton from "../../components/BlueButton";
+import BlueButton from "../../../components/BlueButton";
 
 interface IFetchButtons {
   activeIndex: number;

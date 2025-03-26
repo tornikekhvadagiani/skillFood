@@ -5,7 +5,7 @@ import Navbar from "../components/navbar/Navbar";
 const ProtectedLayout: React.FC = () => {
   const { isLoggedIn } = useAuth();
 
-  return !isLoggedIn ? (
+  return isLoggedIn ? (
     <>
       <Navbar />
       <Outlet />

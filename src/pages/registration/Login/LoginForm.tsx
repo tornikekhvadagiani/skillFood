@@ -24,13 +24,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
 
   const [users, setUsers] = useState<any[]>([]);
 
-  const { VITE_API_URL, VITE_COURIERS_KEY } = import.meta.env;
+  const { VITE_API_URL, VITE_COURIERS_KEY, VITE_ADMINS_KEY, VITE_USERS_KEY } =
+    import.meta.env;
   const { login } = useAuth();
   const navigate = useNavigate();
+  const correctKey = () => {
+    switch (loginType) {
+      case "admins":
+        return VITE_ADMINS_KEY;
+      case "couriers":
+        return VITE_COURIERS_KEY;
+      case "users":
+        return VITE_USERS_KEY;
+    }
+  };
 
   const { data, error, loading } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
-    key: VITE_COURIERS_KEY,
+    key: correctKey(),
     endPoint: loginType,
   });
 
@@ -64,6 +75,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
       toast.error("No users found.");
       return;
     }
+    console.log(data);
 
     const user = users.find(
       (user: any) =>
@@ -71,10 +83,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
     );
 
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("loginedAccount", JSON.stringify(user));
       toast.success("Login successful!");
-      navigate("/");
       login(user);
+      navigate("/");
     } else {
       toast.error("Invalid email or password.");
     }

@@ -10,4 +10,5 @@ export interface UserData {
   dates?: Record<string, string[]>;
   lng?: string;
   lat?: string;
+  uuid?: string;
 }

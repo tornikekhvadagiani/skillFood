@@ -11,10 +11,9 @@ interface IGetRequest {
 }
 
 const useGetRequest = ({ baseUrl, key, endPoint, uuid }: IGetRequest) => {
-  const [data, setData] = useState<UserData | UserData[] | null>(null);
+  const [data, setData] = useState<UserData | UserData[] | any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);

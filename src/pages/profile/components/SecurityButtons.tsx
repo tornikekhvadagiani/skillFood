@@ -1,16 +1,20 @@
 import React from "react";
 import useUser from "../../../store/useUser";
+import { useParams } from "react-router-dom";
 
 interface ISecurityButtons {
   setIsEditingInfo: React.Dispatch<React.SetStateAction<boolean>>;
   isEditingInfo: boolean;
+  setIsEditingHours: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SecurityButtons: React.FC<ISecurityButtons> = ({
   setIsEditingInfo,
   isEditingInfo,
+  setIsEditingHours,
 }) => {
   const { user } = useUser();
+  const { role } = useParams();
 
   return (
     <div className="mt-12">
@@ -26,10 +30,10 @@ const SecurityButtons: React.FC<ISecurityButtons> = ({
           title="Delete Account"
           handleClick={() => console.log(true)}
         />
-        {user?.dates && (
+        {(user?.dates || role === "couriers") && (
           <SecurityButton
             title="Change Working Hours"
-            handleClick={() => console.log(true)}
+            handleClick={() => setIsEditingHours(true)}
           />
         )}
       </div>

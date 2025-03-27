@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useGetRequest from "../hooks/useGetRequest";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
+import { useParams } from "react-router-dom";
 
 const daysOfWeek = [
   "Friday",
@@ -22,20 +23,39 @@ const SelectCourierHours = ({
   setIsOpen: (val: boolean) => void;
   onTimeSelectionChange: (selectedTimes: Record<string, string[]>) => void;
 }) => {
+  const { uuid } = useParams();
   const [selectedTimes, setSelectedTimes] = useState<
     Record<string, Set<string>>
   >({});
   const { VITE_API_URL, VITE_DATES_KEY } = import.meta.env;
+
+  const { data: userData, loading: userLoading } = useGetRequest({
+    baseUrl: `${VITE_API_URL}`,
+    endPoint: `couriers/${uuid}`,
+    key: VITE_DATES_KEY,
+  });
 
   const { data, loading } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
     endPoint: "dates",
     key: VITE_DATES_KEY,
   });
+  const currentUsersDates = userData?.dates;
+
+  useEffect(() => {
+    if (userData?.dates) {
+      const initialTimes: Record<string, Set<string>> = {};
+      Object.entries(userData.dates).forEach(([day, times]) => {
+        initialTimes[day] = new Set(times as string[]);
+      });
+      setSelectedTimes(initialTimes);
+    }
+  }, [userData]);
 
   const toggleTimeSelection = (day: string, time: string) => {
-    if (!data[0][day][time]) {
+    if (!data[0][day][time] && !currentUsersDates[day].includes(time)) {
       toast.error("This Time is Already Taken!!");
+
       return;
     }
     setSelectedTimes((prev) => {
@@ -53,10 +73,10 @@ const SelectCourierHours = ({
 
   const handleConfirm = async () => {
     const formattedTimes: Record<string, string[]> = {};
-
     Object.keys(selectedTimes).forEach((day) => {
       formattedTimes[day] = Array.from(selectedTimes[day] || new Set());
     });
+    console.log(formattedTimes);
 
     onTimeSelectionChange(formattedTimes);
     setIsOpen(false);
@@ -69,10 +89,10 @@ const SelectCourierHours = ({
           <h2 className=" font-semibold mb-4 text-2xl text-var-blue">
             Select Working Hours
           </h2>
-          {loading ? (
+          {loading || userLoading ? (
             <ClipLoader
               color={"royalblue"}
-              loading={loading}
+              loading={loading || userLoading}
               size={150}
               aria-label="Loading Spinner"
               data-testid="loader"
@@ -83,24 +103,36 @@ const SelectCourierHours = ({
               {daysOfWeek.map((day) => (
                 <div key={day}>
                   <h3 className="font-semibold mb-2 text-2xl">{day}</h3>
-                  <div className="grid grid-cols-4 gap-2   ">
+                  <div className="grid grid-cols-4 gap-2">
                     {data &&
                       Object.keys(data[0][day]).map((time: string) => {
                         const isSelected = selectedTimes[day]?.has(time);
+
                         return (
                           <button
                             key={`${day}-${time}`}
                             className={` p-2 text-xs border rounded-md cursor-pointer font-bold bg-transparent
                               ${
                                 !data[0][day][time] &&
-                                "!cursor-not-allowed !bg-gray-500 text-gray-300"
-                              } 
+                                "cursor-not-allowed bg-gray-500 text-gray-300"
+                              }
                               ${
                                 isSelected
                                   ? "!bg-blue-500 text-white"
                                   : "bg-gray-200"
-                              }`} // Apply blue or gray
-                            onClick={() => toggleTimeSelection(day, time)}
+                              }
+                              
+                              ${
+                                currentUsersDates[day]?.includes(time) &&
+                                "!bg-blue-500"
+                              }
+                              `}
+                            onClick={() => {
+                              toggleTimeSelection(day, time);
+                              console.log(
+                                currentUsersDates[day].includes(time)
+                              );
+                            }}
                           >
                             {time}
                           </button>

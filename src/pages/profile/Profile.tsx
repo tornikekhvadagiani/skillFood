@@ -5,16 +5,24 @@ import AcountInfoHeader from "./components/AcountInfoHeader";
 import ProfilePicture from "./components/ProfilePicture";
 import SecurityButtons from "./components/SecurityButtons";
 import useUser from "../../store/useUser";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserData } from "../../interfaces/user-interface";
+import SelectCourierHours from "../../components/SelectCourierHours";
+import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
 
 export default function Profile() {
   const { user } = useUser();
   const { uuid, role } = useParams();
   const { VITE_COURIERS_KEY, VITE_USERS_KEY, VITE_API_URL } = import.meta.env;
   const [isEditingInfo, setIsEditingInfo] = useState<boolean>(false);
+  const [isEditingHours, setIsEditingHours] = useState<boolean>(false);
 
   const correctEndPoint = role === "users" ? "users" : "couriers";
+  const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
+    {}
+  );
+  const transformedWorkingHours = useTransformedWorkingHours(workingHours);
+  console.log(transformedWorkingHours);
 
   const correctKey = () => {
     switch (role) {
@@ -37,8 +45,22 @@ export default function Profile() {
   const userData = Array.isArray(data) ? data[0] : data;
   const selectedUser: UserData = (uuid && userData) || user || ({} as UserData);
 
+  const handleTimeSelectionChange = (
+    newWorkingHours: Record<string, string[]>
+  ) => {
+    setWorkingHours(newWorkingHours);
+  };
+  useEffect(() => {
+    console.log(useTransformedWorkingHours);
+  }, [workingHours]);
+
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">
+      <SelectCourierHours
+        isOpen={isEditingHours}
+        onTimeSelectionChange={handleTimeSelectionChange}
+        setIsOpen={setIsEditingHours}
+      />
       <div className="bg-gray-100 px-30 py-4">
         {uuid && loading ? (
           <h1>Loading...</h1>
@@ -78,6 +100,7 @@ export default function Profile() {
               />
             </div>
             <SecurityButtons
+              setIsEditingHours={setIsEditingHours}
               isEditingInfo={isEditingInfo}
               setIsEditingInfo={setIsEditingInfo}
             />

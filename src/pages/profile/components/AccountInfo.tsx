@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useUser from "../../../store/useUser";
 
+
 interface IAccountInfo {
   isEditing: boolean;
   setIsEditing: Function;

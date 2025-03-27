@@ -8,7 +8,7 @@ export const useTransformedWorkingHours = (
   const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
   const { uuid } = useParams();
 
-  const { data } = useGetRequest({
+  const { data: datesData } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
     key: VITE_DATES_KEY,
     endPoint: `dates`,
@@ -18,16 +18,16 @@ export const useTransformedWorkingHours = (
     ? useGetRequest({
         baseUrl: `${VITE_API_URL}`,
         key: VITE_COURIERS_KEY,
-        endPoint: `couriers/${uuid}`,
+        endPoint: `couriers`,
+        uuid: uuid,
       })
     : {};
-
   const [transformedData, setTransformedData] = useState<
     Record<string, Record<string, boolean>>
   >({});
 
   useEffect(() => {
-    if (!data) return;
+    if (!datesData) return;
 
     const newTransformedData: Record<string, Record<string, boolean>> = {};
 
@@ -49,18 +49,14 @@ export const useTransformedWorkingHours = (
           if (userData?.dates[day]?.includes(time)) {
             newTransformedData[day][time] = true;
           } else {
-            if (time === "00:00" && day === "Friday") {
-              console.log("WorkingHours", workingHours["Friday"]);
-              console.log("UserData", userData.dates["Friday"]);
-            }
-            newTransformedData[day][time] = data[0][day][time];
+            newTransformedData[day][time] = datesData[0][day][time];
           }
         }
       });
     });
 
     setTransformedData(newTransformedData);
-  }, [data, workingHours, userData]);
+  }, [datesData, workingHours, userData]);
 
   return transformedData;
 };

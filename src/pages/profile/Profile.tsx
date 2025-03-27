@@ -1,16 +1,15 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import SelectCourierHours from "../../components/SelectCourierHours";
 import useGetRequest from "../../hooks/useGetRequest";
 import usePutRequest from "../../hooks/usePutRequest";
-import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
+import { UserData } from "../../interfaces/user-interface";
 import AccountInfo from "./components/AccountInfo";
 import AcountInfoHeader from "./components/AcountInfoHeader";
 import ProfilePicture from "./components/ProfilePicture";
 import SecurityButtons from "./components/SecurityButtons";
+import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
+import { useParams } from "react-router-dom";
 import useUser from "../../store/useUser";
-import SelectCourierHours from "../../components/SelectCourierHours";
-import { UserData } from "../../interfaces/user-interface";
-import { setDefault } from "../../components/setDefault";
 
 export default function Profile() {
   const { user } = useUser();
@@ -22,8 +21,9 @@ export default function Profile() {
     VITE_DATES_KEY,
     VITE_DATES_UUID,
   } = import.meta.env;
-  const [isEditingInfo, setIsEditingInfo] = useState<boolean>(false);
-  const [isEditingHours, setIsEditingHours] = useState<boolean>(false);
+
+  const [isEditingInfo, setIsEditingInfo] = useState(false);
+  const [isEditingHours, setIsEditingHours] = useState(false);
   const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
     {}
   );
@@ -33,15 +33,14 @@ export default function Profile() {
   > | null>(null);
 
   const transformedWorkingHours = useTransformedWorkingHours(workingHours);
-  useEffect(() => {
-    console.log(transformedWorkingHours["Friday"]);
 
-    if (transformedWorkingHours && formattedHourForUpdate) {
+  useEffect(() => {
+    if (formattedHourForUpdate) {
       usePutRequest({
         baseUrl: VITE_API_URL,
         key: VITE_COURIERS_KEY,
         data: { dates: formattedHourForUpdate },
-        endPoint: `couriers/${uuid}`,
+        endPoint: `couriers/${uuid ? uuid : user?._uuid}`,
         toastError: "Failed To Update Courier Hours",
         toastSuccess: "Working Hours Updated Successfully",
       })
@@ -53,23 +52,12 @@ export default function Profile() {
           console.error("Error updating courier hours:", error)
         );
     }
-  }, [
-    transformedWorkingHours,
-    formattedHourForUpdate,
-    VITE_API_URL,
-    VITE_COURIERS_KEY,
-    uuid,
-  ]);
+  }, [formattedHourForUpdate, VITE_API_URL, VITE_COURIERS_KEY, uuid]);
 
   const correctKey = () => {
-    switch (role) {
-      case "couriers":
-        return VITE_COURIERS_KEY;
-      case "users":
-        return VITE_USERS_KEY;
-      default:
-        return "";
-    }
+    if (role === "couriers") return VITE_COURIERS_KEY;
+    if (role === "users") return VITE_USERS_KEY;
+    return "";
   };
 
   const updateWorkingHours = async (
@@ -91,7 +79,7 @@ export default function Profile() {
   };
 
   const { data, loading } = useGetRequest({
-    baseUrl: `${VITE_API_URL}`,
+    baseUrl: VITE_API_URL,
     key: correctKey(),
     endPoint: role === "users" ? "users" : "couriers",
     uuid: uuid || "",
@@ -104,8 +92,8 @@ export default function Profile() {
     newWorkingHours: Record<string, string[]>
   ) => {
     setWorkingHours(newWorkingHours);
-    // console.log("Updated Working Hours:", newWorkingHours);
   };
+
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">
       <SelectCourierHours
@@ -114,7 +102,6 @@ export default function Profile() {
         setIsOpen={setIsEditingHours}
         updateWorkingHours={updateWorkingHours}
       />
-
       <div className="bg-gray-100 px-30 py-4">
         {uuid && loading ? (
           <h1>Loading...</h1>

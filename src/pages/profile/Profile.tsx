@@ -9,11 +9,13 @@ import { useEffect, useState } from "react";
 import { UserData } from "../../interfaces/user-interface";
 import SelectCourierHours from "../../components/SelectCourierHours";
 import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
+import usePutRequest from "../../hooks/usePutRequest";
 
 export default function Profile() {
   const { user } = useUser();
   const { uuid, role } = useParams();
-  const { VITE_COURIERS_KEY, VITE_USERS_KEY, VITE_API_URL } = import.meta.env;
+  const { VITE_COURIERS_KEY, VITE_USERS_KEY, VITE_API_URL, VITE_DATES_KEY } =
+    import.meta.env;
   const [isEditingInfo, setIsEditingInfo] = useState<boolean>(false);
   const [isEditingHours, setIsEditingHours] = useState<boolean>(false);
 
@@ -22,7 +24,6 @@ export default function Profile() {
     {}
   );
   const transformedWorkingHours = useTransformedWorkingHours(workingHours);
-  console.log(transformedWorkingHours);
 
   const correctKey = () => {
     switch (role) {
@@ -33,6 +34,28 @@ export default function Profile() {
       default:
         return "";
     }
+  };
+
+  const updateWorkingHours = (formatedHour: any) => {
+    
+    
+    usePutRequest({
+      baseUrl: VITE_API_URL,
+      key: VITE_COURIERS_KEY,
+      data: { dates: formatedHour },
+      endPoint: `couriers/${uuid}`,
+      toastError: "Failed To Update Courier Hours",
+      toastSuccess: "Working Hours Updated Successfully",
+    }).then(() => {
+      usePutRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_DATES_KEY,
+        data: transformedWorkingHours,
+        endPoint: `dates`,
+        toastError: "Failed To Update Courier Hours",
+        toastSuccess: "Working Hours Updated Successfully",
+      });
+    });
   };
 
   const { data, loading } = useGetRequest({
@@ -49,10 +72,8 @@ export default function Profile() {
     newWorkingHours: Record<string, string[]>
   ) => {
     setWorkingHours(newWorkingHours);
+    console.log("Updated Working Hours:", newWorkingHours);
   };
-  useEffect(() => {
-    console.log(useTransformedWorkingHours);
-  }, [workingHours]);
 
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">
@@ -60,6 +81,7 @@ export default function Profile() {
         isOpen={isEditingHours}
         onTimeSelectionChange={handleTimeSelectionChange}
         setIsOpen={setIsEditingHours}
+        updateWorkingHours={updateWorkingHours}
       />
       <div className="bg-gray-100 px-30 py-4">
         {uuid && loading ? (

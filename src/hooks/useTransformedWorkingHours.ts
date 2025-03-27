@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react";
 import useGetRequest from "./useGetRequest";
+import { useParams } from "react-router-dom";
 
 export const useTransformedWorkingHours = (
   workingHours: Record<string, string[]>
 ) => {
-  const { VITE_API_URL, VITE_DATES_KEY } = import.meta.env;
+  const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
+  const { uuid } = useParams();
+
   const { data } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
     key: VITE_DATES_KEY,
     endPoint: `dates`,
   });
+
+  const { data: userData } = uuid
+    ? useGetRequest({
+        baseUrl: `${VITE_API_URL}`,
+        key: VITE_COURIERS_KEY,
+        endPoint: `couriers/${uuid}`,
+      })
+    : {};
 
   const [transformedData, setTransformedData] = useState<
     Record<string, Record<string, boolean>>
@@ -34,7 +45,11 @@ export const useTransformedWorkingHours = (
         if (workingHours[day].includes(time)) {
           newTransformedData[day][time] = false;
         } else {
-          newTransformedData[day][time] = data[0][day][time];
+          if (userData?.length && userData.dates[day].includes(time)) {
+            newTransformedData[day][time] = true;
+          } else {
+            newTransformedData[day][time] = data[0][day][time];
+          }
         }
       });
     });

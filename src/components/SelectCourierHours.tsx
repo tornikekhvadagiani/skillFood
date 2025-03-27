@@ -27,9 +27,9 @@ const SelectCourierHours = ({
   updateWorkingHours?: (data: any) => void;
 }) => {
   const { uuid } = useParams();
-  const [selectedTimes, setSelectedTimes] = useState<Record<string, Set<string>>>(
-    {}
-  );
+  const [selectedTimes, setSelectedTimes] = useState<
+    Record<string, Set<string>>
+  >({});
   const { user } = useUser();
   const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
 
@@ -70,8 +70,10 @@ const SelectCourierHours = ({
 
     setSelectedTimes((prev) => {
       const updatedTimes = { ...prev };
-      updatedTimes[day] = updatedTimes[day] ? new Set(updatedTimes[day]) : new Set();
-      
+      updatedTimes[day] = updatedTimes[day]
+        ? new Set(updatedTimes[day])
+        : new Set();
+
       // Toggle time selection in the set
       if (updatedTimes[day].has(time)) {
         updatedTimes[day].delete(time);
@@ -79,13 +81,12 @@ const SelectCourierHours = ({
         updatedTimes[day].add(time);
       }
 
-      // Immediately update the selected times and pass to the parent
       const formattedTimes: Record<string, string[]> = {};
       Object.keys(updatedTimes).forEach((day) => {
         formattedTimes[day] = Array.from(updatedTimes[day]);
       });
 
-      onTimeSelectionChange(formattedTimes); // Pass updated times to the parent
+      onTimeSelectionChange(formattedTimes); 
 
       return updatedTimes;
     });

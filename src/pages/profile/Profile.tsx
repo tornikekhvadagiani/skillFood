@@ -33,11 +33,10 @@ export default function Profile() {
   > | null>(null);
 
   const transformedWorkingHours = useTransformedWorkingHours(workingHours);
-
   useEffect(() => {
-    if (transformedWorkingHours && formattedHourForUpdate) {
-      console.log(transformedWorkingHours);
+    console.log(transformedWorkingHours["Friday"]);
 
+    if (transformedWorkingHours && formattedHourForUpdate) {
       usePutRequest({
         baseUrl: VITE_API_URL,
         key: VITE_COURIERS_KEY,
@@ -77,7 +76,6 @@ export default function Profile() {
     formattedHour: Record<string, string[]>
   ) => {
     try {
-      console.log("Transformed working hours:", transformedWorkingHours);
       await usePutRequest({
         baseUrl: VITE_API_URL,
         key: VITE_DATES_KEY,
@@ -106,7 +104,7 @@ export default function Profile() {
     newWorkingHours: Record<string, string[]>
   ) => {
     setWorkingHours(newWorkingHours);
-    console.log("Updated Working Hours:", newWorkingHours);
+    // console.log("Updated Working Hours:", newWorkingHours);
   };
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">

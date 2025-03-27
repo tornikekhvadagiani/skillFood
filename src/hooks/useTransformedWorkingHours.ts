@@ -41,13 +41,18 @@ export const useTransformedWorkingHours = (
       });
 
       allTimesOfDay.forEach((time) => {
-        newTransformedData[day][time] = !workingHours[day].includes(time);
-        if (workingHours[day].includes(time)) {
+        const isWorkingHour = workingHours[day].includes(time);
+
+        if (isWorkingHour) {
           newTransformedData[day][time] = false;
         } else {
-          if (userData?.length && userData.dates[day].includes(time)) {
+          if (userData?.dates[day]?.includes(time)) {
             newTransformedData[day][time] = true;
           } else {
+            if (time === "00:00" && day === "Friday") {
+              console.log("WorkingHours", workingHours["Friday"]);
+              console.log("UserData", userData.dates["Friday"]);
+            }
             newTransformedData[day][time] = data[0][day][time];
           }
         }

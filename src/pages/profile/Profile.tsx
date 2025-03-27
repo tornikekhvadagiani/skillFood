@@ -64,6 +64,7 @@ export default function Profile() {
                 Account information
               </p>
               <AccountInfo
+                setIsEditing={setIsEditingInfo}
                 isEditing={isEditingInfo}
                 email={selectedUser?.email}
                 firstname={selectedUser?.firstname}

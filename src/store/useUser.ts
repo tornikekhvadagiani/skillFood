@@ -1,19 +1,21 @@
 import { create } from "zustand";
-import { UserData } from "../interfaces/user-interface";
+import { IUserApiDefaultInfo, UserData } from "../interfaces/user-interface";
 interface Coordinates {
   lat: string | null;
   lng: string | null;
 }
 interface IUseUser {
-  user: UserData | null;
-  setUser: (user: UserData | null) => void;
+  user: (UserData & IUserApiDefaultInfo) | null;
+
   coordinates: {
     lat: string | null;
     lng: string | null;
   };
   setCoordinates: (coords: Coordinates) => void;
+  setUser: (user: (UserData & IUserApiDefaultInfo) | null) => void;
 
-  login: (userData: UserData) => void;
+  login: (userData: UserData & IUserApiDefaultInfo) => void;
+
   logout: () => void;
 }
 

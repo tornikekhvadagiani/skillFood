@@ -5,11 +5,15 @@ import AcountInfoHeader from "./components/AcountInfoHeader";
 import ProfilePicture from "./components/ProfilePicture";
 import SecurityButtons from "./components/SecurityButtons";
 import useUser from "../../store/useUser";
+import { useState } from "react";
+import { UserData } from "../../interfaces/user-interface";
 
 export default function Profile() {
   const { user } = useUser();
   const { uuid, role } = useParams();
   const { VITE_COURIERS_KEY, VITE_USERS_KEY, VITE_API_URL } = import.meta.env;
+  const [isEditingInfo, setIsEditingInfo] = useState<boolean>(false);
+
   const correctEndPoint = role === "users" ? "users" : "couriers";
 
   const correctKey = () => {
@@ -31,7 +35,8 @@ export default function Profile() {
   });
 
   const userData = Array.isArray(data) ? data[0] : data;
-  console.log(`userdata`, userData);
+  const selectedUser: UserData = (uuid && userData) || user || ({} as UserData);
+
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">
       <div className="bg-gray-100 px-30 py-4">
@@ -41,17 +46,17 @@ export default function Profile() {
           <>
             <div className="flex justify-center">
               <ProfilePicture
-                isEditing={uuid}
+                isAdminEditing={uuid}
                 editingPicture={
-                  typeof userData?.profilepicture === "string"
-                    ? userData.profilepicture
+                  typeof selectedUser?.profilepicture === "string"
+                    ? selectedUser.profilepicture
                     : ""
                 }
               />
             </div>
             <AcountInfoHeader
-              editingFirstName={userData?.firstname || ""}
-              editingLastName={userData?.lastname || ""}
+              editingFirstName={selectedUser?.firstname}
+              editingLastName={selectedUser?.lastname || ""}
               isEditing={Boolean(uuid)}
             />
             <div>
@@ -59,22 +64,22 @@ export default function Profile() {
                 Account information
               </p>
               <AccountInfo
-                email={(uuid && userData?.email) || user?.email || ""}
-                firstname={
-                  (uuid && userData?.firstname) || user?.firstname || ""
-                }
-                lastname={(uuid && userData?.lastname) || user?.lastname || ""}
-                password={(uuid && userData?.password) || user?.password || ""}
-                personalId={
-                  (uuid && userData?.personalId) || user?.personalId || ""
-                }
-                phone={(uuid && userData?.phone) || user?.phone || ""}
-                lat={(uuid && userData?.lat) || user?.lat || ""}
-                lng={(uuid && userData?.lng) || user?.lng || ""}
-                vehicle={(uuid && userData?.vehicle) || user?.vehicle || ""}
+                isEditing={isEditingInfo}
+                email={selectedUser?.email}
+                firstname={selectedUser?.firstname}
+                lastname={selectedUser?.lastname}
+                password={selectedUser?.password}
+                personalId={selectedUser?.personalId}
+                phone={selectedUser?.phone}
+                lat={selectedUser?.lat}
+                lng={selectedUser?.lng}
+                vehicle={selectedUser?.vehicle}
               />
             </div>
-            <SecurityButtons />
+            <SecurityButtons
+              isEditingInfo={isEditingInfo}
+              setIsEditingInfo={setIsEditingInfo}
+            />
           </>
         )}
       </div>

@@ -2,11 +2,11 @@ import React from "react";
 import { isString } from "@cloudinary/url-gen/internal/utils/dataStructureUtils";
 import useUser from "../../../store/useUser";
 interface IProfilePicture {
-  isEditing: string | undefined;
+  isAdminEditing: string | undefined;
   editingPicture: string;
 }
 const ProfilePicture: React.FC<IProfilePicture> = ({
-  isEditing,
+  isAdminEditing,
   editingPicture,
 }) => {
   const { user } = useUser();
@@ -17,7 +17,7 @@ const ProfilePicture: React.FC<IProfilePicture> = ({
   return (
     <img
       className=" h-25 aspect-square rounded-full object-cover"
-      src={Boolean(isEditing) ? editingPicture : userImageFilter}
+      src={Boolean(isAdminEditing) ? editingPicture : userImageFilter}
       alt="profileImage"
     />
   );

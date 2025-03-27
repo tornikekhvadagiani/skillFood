@@ -55,7 +55,7 @@ export const useTransformedWorkingHours = (
     });
 
     setTransformedData(newTransformedData);
-  }, [data, workingHours]);
+  }, [data, workingHours, userData]);
 
   return transformedData;
 };

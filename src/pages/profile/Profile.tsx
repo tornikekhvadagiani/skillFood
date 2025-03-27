@@ -1,29 +1,66 @@
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import useGetRequest from "../../hooks/useGetRequest";
+import usePutRequest from "../../hooks/usePutRequest";
+import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
 import AccountInfo from "./components/AccountInfo";
 import AcountInfoHeader from "./components/AcountInfoHeader";
 import ProfilePicture from "./components/ProfilePicture";
 import SecurityButtons from "./components/SecurityButtons";
 import useUser from "../../store/useUser";
-import { useEffect, useState } from "react";
-import { UserData } from "../../interfaces/user-interface";
 import SelectCourierHours from "../../components/SelectCourierHours";
-import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
-import usePutRequest from "../../hooks/usePutRequest";
+import { UserData } from "../../interfaces/user-interface";
+import { setDefault } from "../../components/setDefault";
 
 export default function Profile() {
   const { user } = useUser();
   const { uuid, role } = useParams();
-  const { VITE_COURIERS_KEY, VITE_USERS_KEY, VITE_API_URL, VITE_DATES_KEY } =
-    import.meta.env;
+  const {
+    VITE_COURIERS_KEY,
+    VITE_USERS_KEY,
+    VITE_API_URL,
+    VITE_DATES_KEY,
+    VITE_DATES_UUID,
+  } = import.meta.env;
   const [isEditingInfo, setIsEditingInfo] = useState<boolean>(false);
   const [isEditingHours, setIsEditingHours] = useState<boolean>(false);
-
-  const correctEndPoint = role === "users" ? "users" : "couriers";
   const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
     {}
   );
+  const [formattedHourForUpdate, setFormattedHourForUpdate] = useState<Record<
+    string,
+    string[]
+  > | null>(null);
+
   const transformedWorkingHours = useTransformedWorkingHours(workingHours);
+
+  useEffect(() => {
+    if (transformedWorkingHours && formattedHourForUpdate) {
+      console.log(transformedWorkingHours);
+
+      usePutRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_COURIERS_KEY,
+        data: { dates: formattedHourForUpdate },
+        endPoint: `couriers/${uuid}`,
+        toastError: "Failed To Update Courier Hours",
+        toastSuccess: "Working Hours Updated Successfully",
+      })
+        .then(() => {
+          console.log("Both updates completed successfully");
+          setFormattedHourForUpdate(null);
+        })
+        .catch((error) =>
+          console.error("Error updating courier hours:", error)
+        );
+    }
+  }, [
+    transformedWorkingHours,
+    formattedHourForUpdate,
+    VITE_API_URL,
+    VITE_COURIERS_KEY,
+    uuid,
+  ]);
 
   const correctKey = () => {
     switch (role) {
@@ -36,32 +73,29 @@ export default function Profile() {
     }
   };
 
-  const updateWorkingHours = (formatedHour: any) => {
-    
-    
-    usePutRequest({
-      baseUrl: VITE_API_URL,
-      key: VITE_COURIERS_KEY,
-      data: { dates: formatedHour },
-      endPoint: `couriers/${uuid}`,
-      toastError: "Failed To Update Courier Hours",
-      toastSuccess: "Working Hours Updated Successfully",
-    }).then(() => {
-      usePutRequest({
+  const updateWorkingHours = async (
+    formattedHour: Record<string, string[]>
+  ) => {
+    try {
+      console.log("Transformed working hours:", transformedWorkingHours);
+      await usePutRequest({
         baseUrl: VITE_API_URL,
         key: VITE_DATES_KEY,
         data: transformedWorkingHours,
-        endPoint: `dates`,
-        toastError: "Failed To Update Courier Hours",
-        toastSuccess: "Working Hours Updated Successfully",
+        endPoint: `dates/${VITE_DATES_UUID}`,
+        toastError: "Failed To Update Dates",
+        toastSuccess: "Dates Updated Successfully",
       });
-    });
+      setFormattedHourForUpdate(formattedHour);
+    } catch (error) {
+      console.error("Error updating dates:", error);
+    }
   };
 
   const { data, loading } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
     key: correctKey(),
-    endPoint: correctEndPoint,
+    endPoint: role === "users" ? "users" : "couriers",
     uuid: uuid || "",
   });
 
@@ -74,7 +108,6 @@ export default function Profile() {
     setWorkingHours(newWorkingHours);
     console.log("Updated Working Hours:", newWorkingHours);
   };
-
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">
       <SelectCourierHours
@@ -83,6 +116,7 @@ export default function Profile() {
         setIsOpen={setIsEditingHours}
         updateWorkingHours={updateWorkingHours}
       />
+
       <div className="bg-gray-100 px-30 py-4">
         {uuid && loading ? (
           <h1>Loading...</h1>

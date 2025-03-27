@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useUser from "../../../store/useUser";
 
-
 interface IAccountInfo {
   isEditing: boolean;
   setIsEditing: Function;
@@ -59,7 +58,6 @@ export default function AccountInfo({
       return `${user?._data_type}/${user?._uuid}`;
     }
   };
-  getCorrectKey();
 
   const submitEdit = async () => {
     if (Object.values(filteredData).includes("")) {

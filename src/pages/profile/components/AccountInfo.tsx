@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState } from "react";
 import { UserData } from "../../../interfaces/user-interface";
 import BlueButton from "../../../components/BlueButton";
 import AccountDetail from "./AcountDetail";
@@ -23,6 +23,7 @@ export default function AccountInfo({
   const { uuid, role } = useParams();
   const { user, setUser } = useUser();
 
+
   const handleInputChange = (key: keyof UserData, newValue: string | File) => {
     setEditingData((prev) => ({
       ...prev,
@@ -30,7 +31,7 @@ export default function AccountInfo({
     }));
   };
   const filteredData = Object.fromEntries(
-    Object.entries(editingData).filter(([key, value]) => value !== undefined)
+    Object.entries(editingData).filter(([_, value]) => value !== undefined)
   );
   const getCorrectKey = () => {
     if (role) {

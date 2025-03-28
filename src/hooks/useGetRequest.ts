@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { UserData } from "../interfaces/user-interface";
 
 export interface IGetRequest {
@@ -34,8 +33,6 @@ const useGetRequest = ({ baseUrl, key, endPoint, uuid }: IGetRequest) => {
           setData(response.data);
         }
       } catch (err) {
-        console.error("GET Request Error:", err);
-        toast.error("Something Went Wrong!");
         setError("Failed to fetch data.");
       } finally {
         setLoading(false);

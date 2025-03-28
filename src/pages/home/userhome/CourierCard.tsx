@@ -5,7 +5,6 @@ import {
 } from "../../../interfaces/user-interface";
 import { isString } from "@cloudinary/url-gen/internal/utils/dataStructureUtils";
 import BlueButton from "../../../components/BlueButton";
-import { useParams } from "react-router-dom";
 import useUser from "../../../store/useUser";
 
 interface ICurierCard {
@@ -30,7 +29,6 @@ const CourierCard: React.FC<ICurierCard> = ({
     vehicle,
     dates,
     userCalled,
-    isAviable,
   } = courier;
   const { user } = useUser();
 

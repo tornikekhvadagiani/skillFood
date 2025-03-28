@@ -8,7 +8,7 @@ import AcountInfoHeader from "./components/AcountInfoHeader";
 import ProfilePicture from "./components/ProfilePicture";
 import SecurityButtons from "./components/SecurityButtons";
 import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useUser from "../../store/useUser";
 import CouriersList from "../home/userhome/CouriersList";
 import { toast } from "react-toastify";
@@ -70,7 +70,7 @@ export default function Profile() {
     if (role === "couriers") return VITE_COURIERS_KEY;
     if (role === "users") return VITE_USERS_KEY;
   };
-
+  const navigate = useNavigate();
   const updateWorkingHours = async (
     formattedHour: Record<string, string[]>
   ) => {
@@ -99,12 +99,18 @@ export default function Profile() {
     }
   };
 
-  const { data, loading } = useGetRequest({
+  const { data, loading, error } = useGetRequest({
     baseUrl: VITE_API_URL,
     key: correctKey(),
     endPoint: role === "users" ? "users" : "couriers",
     uuid: uuid || "",
   });
+  useEffect(() => {
+    if (error) {
+      toast.error("Account not found!");
+      navigate("/");
+    }
+  }, [error, navigate]);
 
   const userData = Array.isArray(data) ? data[0] : data;
   const selectedUser: UserData = (uuid && userData) || user || ({} as UserData);

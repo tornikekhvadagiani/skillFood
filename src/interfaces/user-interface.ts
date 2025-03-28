@@ -11,7 +11,7 @@ export interface UserData {
   lng?: string;
   lat?: string;
   uuid?: string;
-  calledCouriers: any;
+  calledCouriers?: any;
   userCalled?: string[];
   isAviable?: boolean;
 }

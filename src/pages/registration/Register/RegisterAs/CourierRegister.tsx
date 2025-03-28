@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
 import { useTransformedWorkingHours } from "../../../../hooks/useTransformedWorkingHours";
-import { setDefault } from "../../../../components/setDefault";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);

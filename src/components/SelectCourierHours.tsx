@@ -30,6 +30,7 @@ const SelectCourierHours = ({
   const [selectedTimes, setSelectedTimes] = useState<
     Record<string, Set<string>>
   >({});
+
   const { user } = useUser();
   const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
 
@@ -61,7 +62,6 @@ const SelectCourierHours = ({
     }
   }, [correctData]);
 
-  
   const toggleTimeSelection = (day: string, time: string) => {
     if (!data[0][day][time] && !currentUsersDates[day].includes(time)) {
       toast.error("This Time is Already Taken!!");
@@ -74,7 +74,6 @@ const SelectCourierHours = ({
         ? new Set(updatedTimes[day])
         : new Set();
 
-      // Toggle time selection in the set
       if (updatedTimes[day].has(time)) {
         updatedTimes[day].delete(time);
       } else {
@@ -86,7 +85,7 @@ const SelectCourierHours = ({
         formattedTimes[day] = Array.from(updatedTimes[day]);
       });
 
-      onTimeSelectionChange(formattedTimes); 
+      onTimeSelectionChange(formattedTimes);
 
       return updatedTimes;
     });

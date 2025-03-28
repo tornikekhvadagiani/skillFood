@@ -10,9 +10,10 @@ import SecurityButtons from "./components/SecurityButtons";
 import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
 import { useParams } from "react-router-dom";
 import useUser from "../../store/useUser";
+import { setDefault } from "../../components/setDefault";
 
 export default function Profile() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { uuid, role } = useParams();
   const {
     VITE_COURIERS_KEY,
@@ -27,6 +28,8 @@ export default function Profile() {
   const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
     {}
   );
+  console.log(user);
+
   const [formattedHourForUpdate, setFormattedHourForUpdate] = useState<Record<
     string,
     string[]
@@ -44,10 +47,17 @@ export default function Profile() {
         toastError: "Failed To Update Courier Hours",
         toastSuccess: "Working Hours Updated Successfully",
       })
-        .then(() => {
+        .then((e) => {
           console.log("Both updates completed successfully");
           setFormattedHourForUpdate(null);
+          if (userData?._uuid === user?.uuid) {
+            setUser(e);
+            localStorage.setItem("loginedAccount", JSON.stringify(e));
+          }
+
+          console.log("e,", e);
         })
+
         .catch((error) =>
           console.error("Error updating courier hours:", error)
         );
@@ -93,7 +103,6 @@ export default function Profile() {
   ) => {
     setWorkingHours(newWorkingHours);
   };
-
   return (
     <div className="flex flex-col w-full h-full justify-center items-center text-center">
       <SelectCourierHours

@@ -8,6 +8,7 @@ export interface IGetRequest {
   key: string;
   endPoint: string;
   uuid?: string;
+  loading?: boolean;
 }
 
 const useGetRequest = ({ baseUrl, key, endPoint, uuid }: IGetRequest) => {

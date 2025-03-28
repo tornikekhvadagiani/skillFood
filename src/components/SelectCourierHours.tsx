@@ -112,7 +112,7 @@ const SelectCourierHours = ({
           <h2 className="font-semibold mb-4 text-2xl text-var-blue">
             Select Working Hours
           </h2>
-          {loading || userLoading ? (
+          {loading || (userLoading && uuid) ? (
             <ClipLoader
               color={"royalblue"}
               loading

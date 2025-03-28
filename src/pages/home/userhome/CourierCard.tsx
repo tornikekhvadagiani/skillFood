@@ -6,6 +6,7 @@ import {
 import { isString } from "@cloudinary/url-gen/internal/utils/dataStructureUtils";
 import BlueButton from "../../../components/BlueButton";
 import { useParams } from "react-router-dom";
+import useUser from "../../../store/useUser";
 
 const CourierCard: React.FC<{
   courier: UserData & IUserApiDefaultInfo;
@@ -14,12 +15,12 @@ const CourierCard: React.FC<{
 
   isAlreadyCalled: boolean;
 }> = ({ courier, callCourier, isAlreadyCalled, removeCourier }) => {
-  const { uuid } = useParams();
   const { firstname, lastname, email, phone, profilepicture, vehicle, dates } =
     courier;
+  const { user } = useUser();
 
   return (
-    <div className="min-w-[400px] rounded-2xl overflow-hidden shadow-2xl bg-white p-4 dark:bg-gray-800">
+    <div className="min-w-[400px] rounded-2xl overflow-hidden shadow-2xl bg-white p-4 dark:bg-gray-800 hover:scale-[1.03] transition duration-400">
       <img
         className="w-32 h-32 object-cover rounded-full mx-auto"
         src={isString(profilepicture) ? profilepicture : ""}
@@ -62,22 +63,23 @@ const CourierCard: React.FC<{
           <p className="text-gray-600 dark:text-gray-300">No available hours</p>
         )}
       </div>
-
-      <div className="py-4 flex justify-center">
-        {isAlreadyCalled ? (
-          <BlueButton
-            active={true}
-            onClick={removeCourier}
-            title="Remove Courier"
-          />
-        ) : (
-          <BlueButton
-            active={false}
-            onClick={callCourier}
-            title="Call Courier"
-          />
-        )}
-      </div>
+      {user?._data_type !== "couriers" && (
+        <div className="py-4 flex justify-center">
+          {isAlreadyCalled ? (
+            <BlueButton
+              active={true}
+              onClick={removeCourier}
+              title="Remove Courier"
+            />
+          ) : (
+            <BlueButton
+              active={false}
+              onClick={callCourier}
+              title="Call Courier"
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

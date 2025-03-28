@@ -2,6 +2,7 @@ import React from "react";
 import useUser from "../../store/useUser";
 import AdminHome from "./adminhome/AdminHome";
 import UserHome from "./userhome/UserHome";
+import CourierHome from "./courierhome/CourierHome";
 
 const Home: React.FC = () => {
   const { user } = useUser();
@@ -12,6 +13,8 @@ const Home: React.FC = () => {
       return <AdminHome />;
     case "users":
       return <UserHome />;
+    case "couriers":
+      return <CourierHome />;
   }
   return <div>Home</div>;
 };

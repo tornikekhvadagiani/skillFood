@@ -83,7 +83,7 @@ const CouriersList: React.FC = () => {
   };
 
   const isAlreadyCalled = (singleCourier: UserData & IUserApiDefaultInfo) =>
-    correctData?.calledCouriers.find(
+    correctData?.calledCouriers?.find(
       (e: any) => e._uuid === singleCourier._uuid
     );
   console.log("corr", correctData?.calledCouriers);

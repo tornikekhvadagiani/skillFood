@@ -1,9 +1,10 @@
 import './App.css'
+import DivPage from './DivPage/DivPage'
 
 function App() {
 
   return (
-   <div></div>
+    <DivPage/>
   )
 }
 

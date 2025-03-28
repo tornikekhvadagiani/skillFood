@@ -11,7 +11,7 @@ export const useTransformedWorkingHours = (
   const { user } = useUser();
 
   const { data: datesData } = useGetRequest(
-    uuid && role === "couriers"
+    (uuid && role === "couriers") || !user
       ? {
           baseUrl: `${VITE_API_URL}`,
           key: VITE_DATES_KEY,

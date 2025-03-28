@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StageForm from "./StageForm";
 import { toast } from "react-toastify";
 import BlueButton from "../../../../components/BlueButton";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { InputFieldProps } from "../../../../interfaces/input-field-interface";
 import { useCloudinaryUpload } from "../../../../hooks/useCloudinaryUpload";
 import { useTransformedWorkingHours } from "../../../../hooks/useTransformedWorkingHours";
+import { setDefault } from "../../../../components/setDefault";
 
 const CourierRegister: React.FC = () => {
   const [stage, setStage] = useState<number>(1);
@@ -22,6 +23,10 @@ const CourierRegister: React.FC = () => {
   const { VITE_API_URL, VITE_COURIERS_KEY, VITE_DATES_KEY, VITE_DATES_UUID } =
     import.meta.env;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(transformedWorkingHours);
+  }, [workingHours, transformedWorkingHours]);
 
   const requiredFields: string[] = [
     "firstname",
@@ -39,8 +44,10 @@ const CourierRegister: React.FC = () => {
   const handleTimeSelectionChange = (
     newWorkingHours: Record<string, string[]>
   ) => {
-    setWorkingHours(newWorkingHours);
-    handleInputChange("workingHours", JSON.stringify(newWorkingHours));
+    setTimeout(() => {
+      setWorkingHours(newWorkingHours);
+      handleInputChange("workingHours", JSON.stringify(newWorkingHours));
+    }, 0);
   };
 
   const nextStage = () => {
@@ -106,6 +113,8 @@ const CourierRegister: React.FC = () => {
       profilepicture: profilePictureUrl,
       role: formData.role,
       vehicle: formData.vehicle,
+      userCalled: [],
+      isAviable: true,
     };
 
     const courierData = await usePostRequest({

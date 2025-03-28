@@ -6,7 +6,6 @@ import CourierHome from "./courierhome/CourierHome";
 
 const Home: React.FC = () => {
   const { user } = useUser();
-  console.log(user?._data_type);
 
   switch (user?._data_type) {
     case "admins":

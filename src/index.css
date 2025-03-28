@@ -22,3 +22,7 @@ html,
   width: 80%;
   margin: auto;
 }
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

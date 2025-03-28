@@ -11,6 +11,7 @@ export interface UserData {
   lng?: string;
   lat?: string;
   uuid?: string;
+  calledCouriers: any;
 }
 export interface IUserApiDefaultInfo {
   _created: number;

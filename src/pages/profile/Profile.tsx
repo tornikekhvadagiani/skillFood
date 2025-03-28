@@ -10,6 +10,7 @@ import SecurityButtons from "./components/SecurityButtons";
 import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
 import { useParams } from "react-router-dom";
 import useUser from "../../store/useUser";
+import CouriersList from "../home/userhome/CouriersList";
 
 export default function Profile() {
   const { user, setUser } = useUser();
@@ -70,7 +71,6 @@ export default function Profile() {
   const correctKey = () => {
     if (role === "couriers") return VITE_COURIERS_KEY;
     if (role === "users") return VITE_USERS_KEY;
-    return "";
   };
 
   const updateWorkingHours = async (
@@ -106,8 +106,16 @@ export default function Profile() {
   ) => {
     setWorkingHours(newWorkingHours);
   };
+  console.log();
+
   return (
-    <div className="flex flex-col w-full h-full justify-center items-center text-center">
+    <div
+      className={`flex flex-col  justify-center  items-center text-center ${
+        !selectedUser?.calledCouriers?.length
+          ? "h-full w-full"
+          : "h-auto mt-10 gap-10"
+      }`}
+    >
       <SelectCourierHours
         isOpen={isEditingHours}
         onTimeSelectionChange={handleTimeSelectionChange}
@@ -139,6 +147,7 @@ export default function Profile() {
                 Account information
               </p>
               <AccountInfo
+                calledCouriers={selectedUser?.calledCouriers}
                 setIsEditing={setIsEditingInfo}
                 isEditing={isEditingInfo}
                 email={selectedUser?.email}
@@ -160,6 +169,12 @@ export default function Profile() {
           </>
         )}
       </div>
+      {uuid && role === "users" && (
+        <div>
+          <h1>This user has called these couriers</h1>
+          <CouriersList />
+        </div>
+      )}
     </div>
   );
 }

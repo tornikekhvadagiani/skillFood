@@ -76,7 +76,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ loginType }) => {
       toast.error("No users found.");
       return;
     }
-    console.log(data);
 
     const user = users.find(
       (user: any) =>

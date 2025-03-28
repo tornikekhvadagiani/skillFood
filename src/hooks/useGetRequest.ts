@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { UserData } from "../interfaces/user-interface";
 
-interface IGetRequest {
+export interface IGetRequest {
   baseUrl: string;
   key: string;
   endPoint: string;

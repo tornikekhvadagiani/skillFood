@@ -1,5 +1,5 @@
-import { use, useEffect, useState } from "react";
-import useGetRequest from "./useGetRequest";
+import {  useEffect, useState } from "react";
+import useGetRequest, { IGetRequest } from "./useGetRequest";
 import { useParams } from "react-router-dom";
 import useUser from "../store/useUser";
 
@@ -15,14 +15,16 @@ export const useTransformedWorkingHours = (
     endPoint: `dates`,
   });
 
-  const { data: userData } = uuid
-    ? useGetRequest({
-        baseUrl: `${VITE_API_URL}`,
-        key: VITE_COURIERS_KEY,
-        endPoint: `couriers`,
-        uuid: uuid,
-      })
-    : {};
+  const { data: userData } = useGetRequest(
+    uuid
+      ? {
+          baseUrl: `${VITE_API_URL}`,
+          key: VITE_COURIERS_KEY,
+          endPoint: `couriers`,
+          uuid: uuid,
+        }
+      : ({} as IGetRequest)
+  );
   const [transformedData, setTransformedData] = useState<
     Record<string, Record<string, boolean>>
   >({});

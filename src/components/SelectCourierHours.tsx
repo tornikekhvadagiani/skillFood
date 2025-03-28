@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useGetRequest from "../hooks/useGetRequest";
+import useGetRequest, { IGetRequest } from "../hooks/useGetRequest";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { useParams } from "react-router-dom";
@@ -34,13 +34,15 @@ const SelectCourierHours = ({
   const { user } = useUser();
   const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
 
-  const { data: userData, loading: userLoading } = uuid
-    ? useGetRequest({
-        baseUrl: `${VITE_API_URL}`,
-        endPoint: `couriers/${uuid}`,
-        key: VITE_COURIERS_KEY,
-      })
-    : { data: {}, loading: false };
+  const { data: userData, loading: userLoading } = useGetRequest(
+    uuid
+      ? {
+          baseUrl: `${VITE_API_URL}`,
+          endPoint: `couriers/${uuid}`,
+          key: VITE_COURIERS_KEY,
+        }
+      : ({} as IGetRequest)
+  );
 
   const correctData = uuid ? userData : user;
 

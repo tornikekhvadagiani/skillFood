@@ -6,8 +6,8 @@ import Login from "./pages/registration/Login/Login";
 import Register from "./pages/registration/Register/Register";
 import Profile from "./pages/profile/Profile";
 
-import AdminHome from "./pages/home/adminhome/AdminHome";
 import useUser from "./store/useUser";
+import Home from "./pages/home/Home";
 
 const Router = () => {
   const { user } = useUser();
@@ -16,7 +16,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<ProtectedLayout />}>
-          <Route index element={<AdminHome />} />
+          <Route index element={<Home />} />
           <Route index path="profile" element={<Profile />} />
           <Route path="profile/:role/:uuid" element={<Profile />} />
         </Route>

@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useGetRequest, { IGetRequest } from "./useGetRequest";
 import { useParams } from "react-router-dom";
 import useUser from "../store/useUser";
@@ -7,16 +7,21 @@ export const useTransformedWorkingHours = (
   workingHours: Record<string, string[]>
 ) => {
   const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
-  const { uuid } = useParams();
+  const { uuid, role } = useParams();
   const { user } = useUser();
-  const { data: datesData } = useGetRequest({
-    baseUrl: `${VITE_API_URL}`,
-    key: VITE_DATES_KEY,
-    endPoint: `dates`,
-  });
+
+  const { data: datesData } = useGetRequest(
+    uuid && role === "couriers"
+      ? {
+          baseUrl: `${VITE_API_URL}`,
+          key: VITE_DATES_KEY,
+          endPoint: `dates`,
+        }
+      : ({} as IGetRequest)
+  );
 
   const { data: userData } = useGetRequest(
-    uuid
+    uuid && role === "couriers"
       ? {
           baseUrl: `${VITE_API_URL}`,
           key: VITE_COURIERS_KEY,

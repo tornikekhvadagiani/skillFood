@@ -99,6 +99,7 @@ const UserRegister: React.FC = () => {
         phone: formData.phone,
         profilepicture: profilePictureUrl,
         role: formData.role,
+        calledCouriers: [],
       };
       usePostRequest({
         baseUrl: VITE_API_URL,

@@ -26,7 +26,7 @@ const SelectCourierHours = ({
   onTimeSelectionChange: (selectedTimes: Record<string, string[]>) => void;
   updateWorkingHours?: (data: any) => void;
 }) => {
-  const { uuid } = useParams();
+  const { uuid, role } = useParams();
   const [selectedTimes, setSelectedTimes] = useState<
     Record<string, Set<string>>
   >({});
@@ -35,7 +35,7 @@ const SelectCourierHours = ({
   const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
 
   const { data: userData, loading: userLoading } = useGetRequest(
-    uuid
+    uuid && role === "couriers"
       ? {
           baseUrl: `${VITE_API_URL}`,
           endPoint: `couriers/${uuid}`,
@@ -46,11 +46,15 @@ const SelectCourierHours = ({
 
   const correctData = uuid ? userData : user;
 
-  const { data, loading } = useGetRequest({
-    baseUrl: `${VITE_API_URL}`,
-    endPoint: "dates",
-    key: VITE_DATES_KEY,
-  });
+  const { data, loading } = useGetRequest(
+    uuid && role === "couriers"
+      ? {
+          baseUrl: `${VITE_API_URL}`,
+          endPoint: "dates",
+          key: VITE_DATES_KEY,
+        }
+      : ({} as IGetRequest)
+  );
 
   const currentUsersDates = correctData?.dates || {};
 

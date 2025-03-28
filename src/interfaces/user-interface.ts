@@ -12,6 +12,8 @@ export interface UserData {
   lat?: string;
   uuid?: string;
   calledCouriers: any;
+  userCalled?: string[];
+  isAviable?: boolean;
 }
 export interface IUserApiDefaultInfo {
   _created: number;

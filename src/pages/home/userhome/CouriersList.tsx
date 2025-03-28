@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import useGetRequest, { IGetRequest } from "../../../hooks/useGetRequest";
 import CourierCard from "./CourierCard";
 import {
@@ -9,6 +9,7 @@ import { ClipLoader } from "react-spinners";
 import usePutRequest from "../../../hooks/usePutRequest";
 import useUser from "../../../store/useUser";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const CouriersList: React.FC = () => {
   const { VITE_API_URL, VITE_COURIERS_KEY, VITE_USERS_KEY } = import.meta.env;
@@ -21,7 +22,7 @@ const CouriersList: React.FC = () => {
     endPoint: `couriers`,
   });
 
-  const { data: editUserData, loading: editUserLoading } = useGetRequest(
+  const { data: editUserData } = useGetRequest(
     uuid
       ? {
           baseUrl: `${VITE_API_URL}`,
@@ -34,6 +35,10 @@ const CouriersList: React.FC = () => {
   const correctData = uuid ? editUserData : user;
 
   const callCourier = async (singleCourier: UserData & IUserApiDefaultInfo) => {
+    if (!singleCourier.isAviable) {
+      toast.error("This Courier is Taken!!");
+      return;
+    }
     await usePutRequest({
       baseUrl: VITE_API_URL,
       key: VITE_USERS_KEY,
@@ -51,10 +56,19 @@ const CouriersList: React.FC = () => {
         window.location.reload();
       }
     });
+
+    await usePutRequest({
+      baseUrl: VITE_API_URL,
+      key: VITE_COURIERS_KEY,
+      data: {
+        userCalled: [...(singleCourier?.userCalled || []), correctData?._uuid],
+        isAviable: false,
+      },
+      endPoint: `couriers/${singleCourier?._uuid}`,
+      toastError: "Failed To Update Courier info (aviable)",
+      toastSuccess: "succes updated",
+    });
   };
-  useEffect(() => {
-    console.log(correctData);
-  }, [correctData]);
 
   const removeCourier = async (
     singleCourier: UserData & IUserApiDefaultInfo
@@ -76,9 +90,21 @@ const CouriersList: React.FC = () => {
       if (!uuid) {
         setUser(e);
         localStorage.setItem("loginedAccount", JSON.stringify(e));
-      } else {
-        window.location.reload();
       }
+      usePutRequest({
+        baseUrl: VITE_API_URL,
+        key: VITE_COURIERS_KEY,
+        data: {
+          isAviable: true,
+        },
+        endPoint: `couriers/${singleCourier?._uuid}`,
+        toastError: "Failed To Update Courier info (aviable)",
+        toastSuccess: "succes updated",
+      }).then(() => {
+        if (uuid) {
+          window.location.reload();
+        }
+      });
     });
   };
 
@@ -86,7 +112,6 @@ const CouriersList: React.FC = () => {
     correctData?.calledCouriers?.find(
       (e: any) => e._uuid === singleCourier._uuid
     );
-  console.log("corr", correctData?.calledCouriers);
 
   const filteredCouriers = uuid ? correctData?.calledCouriers : couriersData;
 
@@ -109,6 +134,7 @@ const CouriersList: React.FC = () => {
             isAlreadyCalled={isAlreadyCalled(courier)}
             courier={courier}
             callCourier={() => callCourier(courier)}
+            userCalled={courier.userCalled ? courier.userCalled : []}
           />
         ))
       )}

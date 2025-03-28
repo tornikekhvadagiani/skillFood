@@ -47,7 +47,7 @@ const SelectCourierHours = ({
   const correctData = uuid ? userData : user;
 
   const { data, loading } = useGetRequest(
-    uuid && role === "couriers"
+    (uuid && role === "couriers") || user || !user
       ? {
           baseUrl: `${VITE_API_URL}`,
           endPoint: "dates",
@@ -97,7 +97,6 @@ const SelectCourierHours = ({
     });
   };
 
-  // Handle confirm action
   const handleConfirm = () => {
     const formattedTimes: Record<string, string[]> = {};
     Object.keys(selectedTimes).forEach((day) => {
@@ -116,7 +115,7 @@ const SelectCourierHours = ({
           <h2 className="font-semibold mb-4 text-2xl text-var-blue">
             Select Working Hours
           </h2>
-          {loading || (userLoading && uuid) ? (
+          {loading && userLoading && uuid ? (
             <ClipLoader
               color={"royalblue"}
               loading

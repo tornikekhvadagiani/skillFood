@@ -11,6 +11,7 @@ import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHou
 import { useParams } from "react-router-dom";
 import useUser from "../../store/useUser";
 import CouriersList from "../home/userhome/CouriersList";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const { user, setUser } = useUser();
@@ -48,7 +49,6 @@ export default function Profile() {
         .then((e) => {
           console.log("Both updates completed successfully");
           setFormattedHourForUpdate(null);
-          console.log("userdata,", userData);
           if (user?.uuid) {
             localStorage.setItem("loginedAccount", JSON.stringify(e));
             setUser(e);
@@ -58,8 +58,6 @@ export default function Profile() {
             setUser(e);
             localStorage.setItem("loginedAccount", JSON.stringify(e));
           }
-
-          console.log("e,", e);
         })
 
         .catch((error) =>
@@ -76,6 +74,16 @@ export default function Profile() {
   const updateWorkingHours = async (
     formattedHour: Record<string, string[]>
   ) => {
+    console.log(
+      Object.values(workingHours).filter((times) => times.length > 0).length
+    );
+
+    if (
+      Object.values(workingHours).filter((times) => times.length > 0).length < 4
+    ) {
+      toast.error("Please select at least 5 working days");
+      return;
+    }
     try {
       await usePutRequest({
         baseUrl: VITE_API_URL,
@@ -104,9 +112,10 @@ export default function Profile() {
   const handleTimeSelectionChange = (
     newWorkingHours: Record<string, string[]>
   ) => {
-    setWorkingHours(newWorkingHours);
+    setTimeout(() => {
+      setWorkingHours(newWorkingHours);
+    }, 0);
   };
-  console.log();
 
   return (
     <div
@@ -171,7 +180,9 @@ export default function Profile() {
       </div>
       {uuid && role === "users" && (
         <div>
-          <h1>This user has called these couriers</h1>
+          <h1 className="font-bold capitalize text-[30px]">
+            This user has called these couriers
+          </h1>
           <CouriersList />
         </div>
       )}

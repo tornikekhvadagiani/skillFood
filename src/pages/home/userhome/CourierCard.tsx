@@ -8,19 +8,37 @@ import BlueButton from "../../../components/BlueButton";
 import { useParams } from "react-router-dom";
 import useUser from "../../../store/useUser";
 
-const CourierCard: React.FC<{
+interface ICurierCard {
   courier: UserData & IUserApiDefaultInfo;
   callCourier: () => Promise<void>;
   removeCourier: () => Promise<void>;
-
   isAlreadyCalled: boolean;
-}> = ({ courier, callCourier, isAlreadyCalled, removeCourier }) => {
-  const { firstname, lastname, email, phone, profilepicture, vehicle, dates } =
-    courier;
+  userCalled: string[];
+}
+const CourierCard: React.FC<ICurierCard> = ({
+  courier,
+  callCourier,
+  isAlreadyCalled,
+  removeCourier,
+}) => {
+  const {
+    firstname,
+    lastname,
+    email,
+    phone,
+    profilepicture,
+    vehicle,
+    dates,
+    userCalled,
+    isAviable,
+  } = courier;
   const { user } = useUser();
 
   return (
-    <div className="min-w-[400px] rounded-2xl overflow-hidden shadow-2xl bg-white p-4 dark:bg-gray-800 hover:scale-[1.03] transition duration-400">
+    <div
+      className={`min-w-[400px] rounded-2xl overflow-hidden shadow-2xl
+         bg-white p-4 dark:bg-gray-800 hover:scale-[1.03] transition duration-400 `}
+    >
       <img
         className="w-32 h-32 object-cover rounded-full mx-auto"
         src={isString(profilepicture) ? profilepicture : ""}
@@ -45,6 +63,12 @@ const CourierCard: React.FC<{
         <p className="text-sm font-semibold dark:text-white">
           Vehicle:{" "}
           <span className="text-gray-600 dark:text-gray-300">{vehicle}</span>
+        </p>
+        <p className="text-sm font-semibold dark:text-white">
+          How many people called the customer:
+          <span className="text-gray-600 dark:text-gray-300">
+            {userCalled?.length}
+          </span>
         </p>
 
         <p className="text-sm font-semibold dark:text-white mb-2">Schedule:</p>

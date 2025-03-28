@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 
 const NavbarLinks = () => {
@@ -15,9 +14,7 @@ const NavbarLinks = () => {
         </NavLink>
         <NavLink
           to={"profile"}
-          className={
-            "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white  hover:bg-gray-700 transition-all"
-          }
+          className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 transition-all"
         >
           Profile
         </NavLink>

@@ -1,22 +1,36 @@
-import { useEffect, useState } from "react";
-import useGetRequest from "./useGetRequest";
+import {  useEffect, useState } from "react";
+import useGetRequest, { IGetRequest } from "./useGetRequest";
+import { useParams } from "react-router-dom";
+import useUser from "../store/useUser";
 
 export const useTransformedWorkingHours = (
   workingHours: Record<string, string[]>
 ) => {
-  const { VITE_API_URL, VITE_DATES_KEY } = import.meta.env;
-  const { data } = useGetRequest({
+  const { VITE_API_URL, VITE_DATES_KEY, VITE_COURIERS_KEY } = import.meta.env;
+  const { uuid } = useParams();
+  const { user } = useUser();
+  const { data: datesData } = useGetRequest({
     baseUrl: `${VITE_API_URL}`,
     key: VITE_DATES_KEY,
     endPoint: `dates`,
   });
 
+  const { data: userData } = useGetRequest(
+    uuid
+      ? {
+          baseUrl: `${VITE_API_URL}`,
+          key: VITE_COURIERS_KEY,
+          endPoint: `couriers`,
+          uuid: uuid,
+        }
+      : ({} as IGetRequest)
+  );
   const [transformedData, setTransformedData] = useState<
     Record<string, Record<string, boolean>>
   >({});
 
   useEffect(() => {
-    if (!data) return;
+    if (!datesData) return;
 
     const newTransformedData: Record<string, Record<string, boolean>> = {};
 
@@ -30,17 +44,26 @@ export const useTransformedWorkingHours = (
       });
 
       allTimesOfDay.forEach((time) => {
-        newTransformedData[day][time] = !workingHours[day].includes(time);
-        if (workingHours[day].includes(time)) {
+        const isWorkingHour = workingHours[day].includes(time);
+
+        if (isWorkingHour) {
           newTransformedData[day][time] = false;
         } else {
-          newTransformedData[day][time] = data[0][day][time];
+          if (!user?.dates && userData?.dates[day]?.includes(time)) {
+            newTransformedData[day][time] = true;
+          } else {
+            if (user?.dates && user?.dates[day]?.includes(time)) {
+              newTransformedData[day][time] = true;
+            } else {
+              newTransformedData[day][time] = datesData[0][day][time];
+            }
+          }
         }
       });
     });
 
     setTransformedData(newTransformedData);
-  }, [data, workingHours]);
+  }, [datesData, workingHours, userData]);
 
   return transformedData;
 };

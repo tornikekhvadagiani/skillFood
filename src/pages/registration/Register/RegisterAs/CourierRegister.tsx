@@ -172,7 +172,7 @@ const CourierRegister: React.FC = () => {
       },
       {
         name: "email",
-        type: "text",
+        type: "email",
         placeholder: "Email",
         value: formData.email || "",
         onChange: (e) => handleInputChange("email", e.target.value),

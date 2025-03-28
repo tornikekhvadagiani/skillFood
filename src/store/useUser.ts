@@ -15,7 +15,6 @@ interface IUseUser {
   setUser: (user: (UserData & IUserApiDefaultInfo) | null) => void;
 
   login: (userData: UserData & IUserApiDefaultInfo) => void;
-
   logout: () => void;
 }
 

@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import { UserData } from "../../../interfaces/user-interface";
 import BlueButton from "../../../components/BlueButton";
 import AccountDetail from "./AcountDetail";
@@ -6,12 +6,10 @@ import usePutRequest from "../../../hooks/usePutRequest";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useUser from "../../../store/useUser";
-
 interface IAccountInfo {
   isEditing: boolean;
   setIsEditing: Function;
 }
-
 export default function AccountInfo({
   isEditing,
   setIsEditing,
@@ -22,7 +20,6 @@ export default function AccountInfo({
   const [editingData, setEditingData] = useState<UserData>(userData);
   const { uuid, role } = useParams();
   const { user, setUser } = useUser();
-
 
   const handleInputChange = (key: keyof UserData, newValue: string | File) => {
     setEditingData((prev) => ({

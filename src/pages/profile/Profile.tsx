@@ -35,6 +35,7 @@ export default function Profile() {
   > | null>(null);
 
   const transformedWorkingHours = useTransformedWorkingHours(workingHours);
+  console.log(transformedWorkingHours);
 
   useEffect(() => {
     if (formattedHourForUpdate) {
@@ -53,13 +54,11 @@ export default function Profile() {
             localStorage.setItem("loginedAccount", JSON.stringify(e));
             setUser(e);
           }
-
           if (userData?._uuid === user?.uuid) {
             setUser(e);
             localStorage.setItem("loginedAccount", JSON.stringify(e));
           }
         })
-
         .catch((error) =>
           console.error("Error updating courier hours:", error)
         );

@@ -22,6 +22,7 @@ const MyForm: React.FC<FormProps> = ({
             ref={input.inputRef ?? undefined}
             value={input.inputRef ? undefined : input.value}
             onChange={input.inputRef ? undefined : input.onChange}
+         
             onClick={
               typeof input.onClick === "function"
                 ? (e) => input.onClick?.(e as any)

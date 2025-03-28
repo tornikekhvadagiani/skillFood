@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import useGetRequest from "./useGetRequest";
 import { useParams } from "react-router-dom";
 import useUser from "../store/useUser";
@@ -47,10 +47,14 @@ export const useTransformedWorkingHours = (
         if (isWorkingHour) {
           newTransformedData[day][time] = false;
         } else {
-          if (userData?.dates[day]?.includes(time)) {
+          if (!user?.dates && userData?.dates[day]?.includes(time)) {
             newTransformedData[day][time] = true;
           } else {
-            newTransformedData[day][time] = datesData[0][day][time];
+            if (user?.dates && user?.dates[day]?.includes(time)) {
+              newTransformedData[day][time] = true;
+            } else {
+              newTransformedData[day][time] = datesData[0][day][time];
+            }
           }
         }
       });

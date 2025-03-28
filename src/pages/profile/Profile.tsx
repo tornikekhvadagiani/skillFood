@@ -10,7 +10,6 @@ import SecurityButtons from "./components/SecurityButtons";
 import { useTransformedWorkingHours } from "../../hooks/useTransformedWorkingHours";
 import { useParams } from "react-router-dom";
 import useUser from "../../store/useUser";
-import { setDefault } from "../../components/setDefault";
 
 export default function Profile() {
   const { user, setUser } = useUser();
@@ -28,8 +27,6 @@ export default function Profile() {
   const [workingHours, setWorkingHours] = useState<Record<string, string[]>>(
     {}
   );
-  console.log(user);
-
   const [formattedHourForUpdate, setFormattedHourForUpdate] = useState<Record<
     string,
     string[]
@@ -50,6 +47,12 @@ export default function Profile() {
         .then((e) => {
           console.log("Both updates completed successfully");
           setFormattedHourForUpdate(null);
+          console.log("userdata,", userData);
+          if (user?.uuid) {
+            localStorage.setItem("loginedAccount", JSON.stringify(e));
+            setUser(e);
+          }
+
           if (userData?._uuid === user?.uuid) {
             setUser(e);
             localStorage.setItem("loginedAccount", JSON.stringify(e));
